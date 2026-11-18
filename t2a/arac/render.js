@@ -16,6 +16,7 @@ const path = require('path');
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   await page.goto('file://' + path.resolve(html));
   await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => window.hazir ? window.hazir() : 0);
   const dur = await page.evaluate(() => window.DURATION);
 
   if (preview) {
