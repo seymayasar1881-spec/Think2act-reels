@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "think2act-reels"
+version = "0.1.0"
+description = "Turn long videos into vertical Reels/Shorts: download, transcribe, pick highlights, face-track crop, captions, animated hook, cover."
+requires-python = ">=3.10"
+dependencies = [
+  "yt-dlp>=2025.1.1",
+  "faster-whisper>=1.1.0",
+  "opencv-python-headless>=4.10",
+  "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+think2act-reels = "think2act_reels.cli:main"
+
+[tool.setuptools]
+packages = ["think2act_reels"]

@@ -1,0 +1,11 @@
+{
+  "name": "think2act-reels-node",
+  "private": true,
+  "type": "module",
+  "description": "Node helpers: HyperFrames hook overlays and Puppeteer cover images",
+  "dependencies": {
+    "gsap": "3.13.0",
+    "hyperframes": "0.9.68",
+    "puppeteer": "24.43.1"
+  }
+}
