@@ -16,12 +16,13 @@ mkdir -p out
 ( cd "$NODE_DIR" && HYPERFRAMES_SKIP_SKILLS=1 npx --no-install hyperframes render "$HERE" \
     --fps 30 --quality delivery --quiet -o "$HERE/out/video_silent.mp4" < /dev/null )
 
-# -14 LUFS, true peak kept under -1 dB by a limiter after loudnorm
-LN="loudnorm=I=-14:TP=-1.5:LRA=11,alimiter=limit=0.85:level=false"
+# -14 LUFS; master to WAV first so the AAC encode stays under -1 dBTP
+ffmpeg -v error -y -i audio/mix.wav -af "loudnorm=I=-14:TP=-2:LRA=11,alimiter=limit=0.75:level=false:attack=1:release=60" \
+  -ar 48000 audio/mix_master.wav
 VENC="-c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -profile:v high"
 # Main version: temporary music + effects
-ffmpeg -v error -y -i out/video_silent.mp4 -i audio/mix.wav -map 0:v -map 1:a $VENC \
-  -af "$LN" -c:a aac -b:a 192k -ar 48000 -shortest -movflags +faststart out/cemre3_rakamlar.mp4
+ffmpeg -v error -y -i out/video_silent.mp4 -i audio/mix_master.wav -map 0:v -map 1:a $VENC \
+  -c:a aac -b:a 256k -ar 48000 -shortest -movflags +faststart out/cemre3_rakamlar.mp4
 # _SESSIZ: effects only, for adding a song inside Instagram
 ffmpeg -v error -y -i out/cemre3_rakamlar.mp4 -i audio/sfx.wav -map 0:v -map 1:a -c:v copy \
   -af "volume=-6dB" -c:a aac -b:a 192k -ar 48000 -shortest -movflags +faststart out/cemre3_rakamlar_SESSIZ.mp4
