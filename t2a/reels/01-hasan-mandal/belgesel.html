@@ -73,6 +73,18 @@
   #cagri .alt { font-family: 'Courier Prime'; font-weight: 700; font-size: 34px; margin-top: 50px; color: var(--kagit); letter-spacing: .08em; }
   #cagri img { height: 110px; margin-top: 50px; }
 
+  /* montaj */
+  #montaj { opacity: 0; background: #0d0a07; }
+  #montaj img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; filter: sepia(.5) contrast(1.12) brightness(.92) saturate(.75); }
+  #montaj .serit { position: absolute; left: 0; right: 0; height: 120px; background: repeating-linear-gradient(90deg, #0d0a07 0 36px, transparent 36px 64px), #0d0a07; background-size: 64px 34px, auto; background-repeat: repeat-x; background-position: 0 43px; }
+  #montaj .serit::after { content: ''; position: absolute; left: 0; right: 0; top: 43px; height: 34px; background: repeating-linear-gradient(90deg, transparent 0 18px, rgba(233,220,192,.55) 18px 46px, transparent 46px 64px); border-radius: 6px; }
+  #montaj .ust-serit { top: 0; } #montaj .alt-serit { bottom: 0; }
+  #montaj .yazi { position: absolute; left: 70px; right: 70px; bottom: 330px; background: rgba(233,220,192,.95); color: var(--murekkep); padding: 40px 48px 44px; box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+  #montaj .yazi .k { font-family: 'Courier Prime'; font-weight: 700; font-size: 28px; letter-spacing: .16em; color: var(--sepya); }
+  #montaj .yazi .b { font-family: 'Playfair Display'; font-weight: 700; font-size: 58px; line-height: 1.08; margin-top: 12px; }
+  #montaj .yazi .m { font-family: 'Special Elite'; font-size: 38px; line-height: 1.35; margin-top: 18px; min-height: 52px; }
+  .kaynakNot { position: absolute; right: 70px; bottom: 270px; font-size: 26px; color: rgba(233,220,192,.75); font-family: 'Courier Prime'; }
+
   /* film efektleri */
   #vinyet { background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(8,5,2,.85) 100%); pointer-events: none; }
   #grain { opacity: .16; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
@@ -95,11 +107,17 @@
   <div class="soru">kimdir?</div>
 </div>
 
-<div class="foto" id="foto-portre"><div class="ic"><img data-src="foto/portre.jpg"></div><div class="alt">Prof. Dr. Hasan Mandal</div><div class="kaynak"></div></div>
-<div class="foto" id="foto-tubitak"><div class="ic"><img data-src="foto/tubitak.jpg"></div><div class="alt">TÜBİTAK Başkanı · 2018–2024</div><div class="kaynak"></div></div>
+<div class="foto" id="foto-portre"><div class="ic"><img id="portre-klip"></div><div class="alt">Prof. Dr. Hasan Mandal</div><div class="kaynak"></div></div>
 <div class="foto" id="foto-itu"><div class="ic"><img data-src="foto/itu.jpg"></div><div class="alt">İTÜ Rektörü · 2024–</div><div class="kaynak"></div></div>
 
 <div id="kart"><div class="yer"></div><div class="yil"></div><div class="baslik"></div><div class="metin"></div></div>
+
+<div id="montaj" class="kat">
+  <img id="montaj-img">
+  <div class="serit ust-serit"></div><div class="serit alt-serit"></div>
+  <div class="yazi"><div class="k">İTÜ · AKADEMİK PERFORMANS ÖDÜLLERİ</div><div class="b">Bilime omuz veren bir rektör</div><div class="m"></div></div>
+  <div class="kaynakNot">Görüntü: İTÜ</div>
+</div>
 
 <div id="oduller" class="kat">
   <h2>Onur<br>Listesi</h2>
@@ -130,7 +148,7 @@
 <div id="karartma" class="kat"></div>
 
 <script>
-window.DURATION = 51;
+window.DURATION = 58.5;
 const W = 1080, H = 1920;
 const cl = x => Math.max(0, Math.min(1, x));
 const io = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -151,10 +169,11 @@ const S = [
   { s: 15, e: 21, yer: 'newcastle', etiket: 'Newcastle', ust: 'İngiltere', yil: '1992', baslik: 'Newcastle Üniversitesi', metin: 'Doktorasını İngiltere\'de tamamlıyor.', ucak: true },
   { s: 21, e: 26, yer: 'eskisehir', etiket: 'Anadolu Üniversitesi', ust: 'Akademi', yil: '2001', baslik: 'Anadolu Üniversitesi', metin: 'Seramik mühendisliğinde profesör oluyor.', ucak: true },
   { s: 26, e: 31, yer: 'sabanci', etiket: 'Sabancı Üniversitesi', ust: 'İstanbul', yil: '2011', baslik: 'Sabancı Üniversitesi', metin: 'Rektör yardımcısı olarak araştırmayı yönetiyor.' },
-  { s: 31, e: 36, yer: 'ankara', etiket: 'TÜBİTAK', ust: 'Ankara', yil: '2018', baslik: 'TÜBİTAK Başkanı', metin: 'Altı yıl boyunca Türkiye\'nin bilim kurumunu yönetiyor.', foto: 'foto-tubitak' },
+  { s: 31, e: 36, yer: 'ankara', etiket: 'TÜBİTAK', ust: 'Ankara', yil: '2018', baslik: 'TÜBİTAK Başkanı', metin: 'Altı yıl boyunca Türkiye\'nin bilim kurumunu yönetiyor.' },
   { s: 36, e: 41, yer: 'itu', etiket: 'İTÜ', ust: 'İstanbul', yil: '2024', baslik: 'İTÜ Rektörü', metin: 'Bugün İstanbul Teknik Üniversitesi\'nin başında.', foto: 'foto-itu' },
-  { s: 41, e: 45.5, tip: 'oduller' },
-  { s: 45.5, e: 51, tip: 'cagri' },
+  { s: 41, e: 48, tip: 'montaj' },
+  { s: 48, e: 52.5, tip: 'oduller' },
+  { s: 52.5, e: 58.5, tip: 'cagri' },
 ];
 
 // kamera anahtar kareleri [zaman, boylam, enlem, ölçek]
@@ -168,7 +187,7 @@ const K = [
   [27, 29.3, 40.2, 6200], [30.4, 29.3, 40.2, 6200],
   [32, 32.78, 39.0, 6200], [35.4, 32.78, 39.0, 6200],
   [37, 29.03, 40.4, 6200], [40.4, 29.03, 40.4, 6200],
-  [42, 33.5, 38.6, 2600], [51, 33.5, 38.6, 2600],
+  [42, 33.5, 38.6, 2600], [58.5, 33.5, 38.6, 2600],
 ];
 function kamera(t) {
   let i = 0;
@@ -245,13 +264,13 @@ function haritaCiz(t) {
 
 // ---------- fotoğraflar (dosya yoksa gizlenir) ----------
 const fotoVar = {};
-document.querySelectorAll('.foto img').forEach(img => {
+document.querySelectorAll('.foto img[data-src]').forEach(img => {
   const id = img.closest('.foto').id;
   img.onload = () => { fotoVar[id] = true; };
   img.onerror = () => { fotoVar[id] = false; };
   img.src = img.dataset.src;
 });
-window.hazir = () => Promise.all([...document.querySelectorAll('.foto img')].map(i => i.complete ? 1 : new Promise(r => { i.onload = () => { fotoVar[i.closest('.foto').id] = true; r(); }; i.onerror = () => r(); })));
+window.hazir = () => Promise.all([...document.querySelectorAll('.foto img[data-src]')].map(i => i.complete ? 1 : new Promise(r => { i.onload = () => { fotoVar[i.closest('.foto').id] = true; r(); }; i.onerror = () => r(); })));
 
 function fotoGoster(id, t, t0, t1) {
   const el = document.getElementById(id);
@@ -335,6 +354,36 @@ function cagriCiz(t) {
   cagri.querySelector('img').style.opacity = cl((lt - 1.6) / 0.5);
 }
 
+// ---------- video klipleri (kare dizileri) ----------
+const KLIP = { r1: 150, k1: 88, k2: 40, k3: 33, k4: 40 };
+fotoVar['foto-portre'] = true;
+const kare = (ad, lt) => `klip/${ad}/${String(Math.min(KLIP[ad], Math.max(1, Math.floor(lt * 30) + 1))).padStart(4, '0')}.jpg`;
+const bekle = [];
+function kareAyarla(img, src) {
+  if (img.getAttribute('src') === src) return;
+  img.setAttribute('src', src);
+  bekle.push(img.decode().catch(() => 0));
+}
+const montaj = document.getElementById('montaj'), mImg = document.getElementById('montaj-img');
+const mYazi = montaj.querySelector('.yazi'), mMet = montaj.querySelector('.m');
+const MONTAJ = [['k1', 88], ['k2', 40], ['k3', 33], ['k4', 40]];
+const mMetin = 'Akademisyenleri ödüllendiriyor, araştırmayı destekliyor.';
+function montajCiz(t) {
+  const a = S.find(x => x.tip === 'montaj');
+  if (t < a.s - 0.01 || t >= a.e) { montaj.style.opacity = 0; return; }
+  const lt = t - a.s;
+  montaj.style.opacity = cl(lt / 0.3) * (1 - cl((lt - (a.e - a.s - 0.35)) / 0.35));
+  let u = lt, sec = MONTAJ[MONTAJ.length - 1][0], yerel = 0;
+  for (const [ad, n] of MONTAJ) { const d = n / 30; if (u < d) { sec = ad; yerel = u; break; } u -= d; yerel = d; }
+  kareAyarla(mImg, kare(sec, yerel));
+  mImg.style.transform = `scale(${1.06 + 0.04 * Math.sin(lt)})`;
+  const g = eo(cl((lt - 0.6) / 0.5));
+  mYazi.style.opacity = g;
+  mYazi.style.transform = `translateY(${(1 - g) * 80}px)`;
+  const n = Math.floor(cl((lt - 1.2) / 2.0) * mMetin.length);
+  mMet.textContent = mMetin.slice(0, n);
+}
+
 // ---------- film efektleri ----------
 const cizik = document.getElementById('cizik');
 for (let i = 0; i < 3; i++) cizik.appendChild(document.createElement('i'));
@@ -352,7 +401,8 @@ function filmCiz(t) {
   document.body.style.filter = `brightness(${flick})`;
   // sahne geçişlerinde ışık sızıntısı
   let leak = 0;
-  for (const x of S) { const d = t - x.s; if (d > -0.3 && d < 0.6) leak = Math.max(leak, 1 - Math.abs(d - 0.1) / 0.5); }
+  const kesimler = S.map(x => x.s).concat([41 + 88 / 30, 41 + 128 / 30, 41 + 161 / 30]);
+  for (const s0 of kesimler) { const d = t - s0; if (d > -0.3 && d < 0.6) leak = Math.max(leak, 1 - Math.abs(d - 0.1) / 0.5); }
   isik.style.opacity = cl(leak) * 0.9;
   // açılış ve kapanış karartması
   karartma.style.opacity = Math.max(1 - cl(t / 0.6), cl((t - (DURATION - 0.6)) / 0.6));
@@ -362,14 +412,17 @@ function filmCiz(t) {
 }
 
 window.seek = t => {
+  bekle.length = 0;
+  if (t < 5.2) kareAyarla(document.getElementById('portre-klip'), kare('r1', Math.max(0, t - 0.2)));
+  montajCiz(t);
   haritaCiz(t);
   kartCiz(t);
   girisCiz(t);
-  fotoGoster('foto-tubitak', t, 31.4, 35.8);
   fotoGoster('foto-itu', t, 36.4, 40.8);
   odulCiz(t);
   cagriCiz(t);
   filmCiz(t);
+  return Promise.all(bekle);
 };
 window.seek(0);
 </script>
