@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Hasan Mandal Kimdir</title>
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/archivo-black/400.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/montserrat/500.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/montserrat/700.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/montserrat/800.css">
+<script src="../../arac/node_modules/d3-array/dist/d3-array.min.js"></script>
+<script src="../../arac/node_modules/d3-geo/dist/d3-geo.min.js"></script>
+<script src="../../arac/node_modules/topojson-client/dist/topojson-client.min.js"></script>
+<script src="../../arac/harita-veri.js"></script>
+<style>
+  :root { --lacivert: #0b1533; --sari: #ffc83d; --mavi: #3d8bff; --pembe: #ff4f8b; --turuncu: #ff8a2b; --mor: #9b5cff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--lacivert); }
+  body { font-family: 'Montserrat', sans-serif; color: #fff; }
+  .kat { position: absolute; inset: 0; }
+  .sahne { opacity: 0; overflow: hidden; }
+  .dev { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: .9; letter-spacing: -.01em; }
+  .tam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  .karart { background: linear-gradient(180deg, rgba(11,21,51,.55) 0%, rgba(11,21,51,0) 28%, rgba(11,21,51,0) 45%, rgba(11,21,51,.92) 78%, rgba(11,21,51,.98) 100%); }
+  .kutu { display: inline-block; background: var(--sari); color: var(--lacivert); padding: 10px 26px 8px; font-family: 'Archivo Black'; font-size: 44px; text-transform: uppercase; letter-spacing: .02em; }
+  .alt-blok { position: absolute; left: 70px; right: 70px; bottom: 330px; }
+  .yil { font-family: 'Archivo Black'; font-size: 200px; line-height: .85; color: var(--sari); }
+  .okul { font-family: 'Archivo Black'; font-size: 84px; line-height: .95; text-transform: uppercase; margin-top: 18px; }
+  .acik { font-weight: 700; font-size: 46px; line-height: 1.25; margin-top: 22px; color: rgba(255,255,255,.92); }
+  .a { opacity: 0; will-change: transform, opacity; }
+  .yok { position: absolute; inset: 0; display: grid; place-items: center; font-family: 'Archivo Black'; font-size: 300px; color: rgba(255,255,255,.12); }
+  .kaynak { position: absolute; right: 30px; top: 210px; font-size: 22px; font-weight: 500; color: rgba(255,255,255,.7); text-shadow: 0 1px 4px rgba(0,0,0,.6); }
+  .serit { position: absolute; left: 0; height: 22px; background: linear-gradient(90deg, var(--mavi), var(--mor), var(--pembe), var(--turuncu), var(--sari)); }
+
+  /* harita */
+  #harita svg { width: 1080px; height: 1920px; }
+  .deniz { fill: #0e1d45; }
+  .ulke { fill: #1c2d5e; stroke: #2c4280; stroke-width: 1.2; }
+  .ulke.tr { fill: #2b4ea8; stroke: #6f98ff; stroke-width: 2.5; }
+  .rota { fill: none; stroke: var(--sari); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 10px rgba(255,200,61,.7)); }
+  .pin circle { fill: var(--sari); stroke: #fff; stroke-width: 5; }
+  .pin text { font-family: 'Archivo Black'; font-size: 40px; fill: #fff; paint-order: stroke; stroke: var(--lacivert); stroke-width: 10px; }
+  .pin .y { font-family: 'Montserrat'; font-weight: 800; font-size: 32px; fill: var(--sari); }
+
+  /* ödüller */
+  .rozet { display: flex; align-items: center; gap: 30px; background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.18); border-radius: 30px; padding: 30px 36px; margin-bottom: 24px; }
+  .rozet .i { flex: 0 0 96px; height: 96px; border-radius: 28px; display: grid; place-items: center; font-size: 54px; }
+  .rozet b { font-family: 'Archivo Black'; font-weight: 400; font-size: 46px; display: block; line-height: 1.05; }
+  .rozet span { font-weight: 700; font-size: 32px; color: rgba(255,255,255,.75); }
+
+  /* çağrı */
+  .yorum { background: #fff; color: #111; border-radius: 40px; padding: 34px 40px; display: flex; gap: 26px; align-items: center; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+  .yorum .av { flex: 0 0 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg, var(--sari), var(--turuncu)); display: grid; place-items: center; font-size: 48px; }
+  .yorum .ad { font-weight: 800; font-size: 30px; color: #555; }
+  .yorum .yazi { font-family: 'Archivo Black'; font-size: 66px; letter-spacing: .02em; }
+  .imlec { display: inline-block; width: 6px; height: 62px; background: #111; vertical-align: -8px; margin-left: 6px; }
+  .kalp { position: absolute; font-size: 70px; }
+
+  #logo { position: absolute; top: 90px; left: 60px; height: 72px; filter: drop-shadow(0 4px 14px rgba(0,0,0,.45)); }
+  #flash { background: #fff; opacity: 0; pointer-events: none; }
+  #ilerleme { position: absolute; top: 60px; left: 60px; right: 60px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); overflow: hidden; }
+  #ilerleme span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--sari), var(--turuncu)); }
+</style>
+</head>
+<body>
+
+<!-- 1. kanca: röportaj görüntüsü -->
+<section class="kat sahne" id="s-kanca">
+  <img class="tam" id="kanca-img">
+  <div class="kat karart"></div>
+  <div class="alt-blok" style="bottom:360px">
+    <div class="a" data-d=".2"><span class="kutu">İTÜ Rektörü</span></div>
+    <div class="dev a" data-d=".35" data-fx="pop" style="font-size:190px;margin-top:26px">Hasan</div>
+    <div class="dev a" data-d=".5" data-fx="pop" style="font-size:190px">Mandal</div>
+    <div class="dev a" data-d=".85" data-fx="pop" style="font-size:120px;color:var(--sari);text-transform:none;margin-top:14px">kimdir?</div>
+  </div>
+</section>
+
+<!-- 2. harita -->
+<section class="kat sahne" id="s-harita">
+  <div class="kat" id="harita"></div>
+  <div class="alt-blok" style="bottom:340px">
+    <div class="a" data-d=".1"><span class="kutu">Yolculuk</span></div>
+    <div class="dev a" data-d=".25" data-fx="pop" style="font-size:96px;margin-top:24px">Eskişehir'den<br><span style="color:var(--sari)">dünyaya</span></div>
+  </div>
+</section>
+
+<!-- 3-7. okullar (fotoğraf dizisi JS ile doldurulur) -->
+<div id="okullar"></div>
+
+<!-- 8. montaj -->
+<section class="kat sahne" id="s-montaj">
+  <img class="tam" id="montaj-img">
+  <div class="kat karart"></div>
+  <div class="kaynak">Görüntü: İTÜ</div>
+  <div class="alt-blok">
+    <div class="a" data-d=".15"><span class="kutu">Bugün İTÜ'de</span></div>
+    <div class="dev a" data-d=".3" data-fx="pop" style="font-size:96px;margin-top:24px">Bilim insanlarını<br><span style="color:var(--sari)">ödüllendiriyor</span></div>
+  </div>
+</section>
+
+<!-- 9. ödüller -->
+<section class="kat sahne" id="s-odul" style="padding:300px 70px 0">
+  <div class="a" data-d=".05"><span class="kutu">Onur listesi</span></div>
+  <div style="height:40px"></div>
+  <div class="rozet a" data-d=".2"><div class="i" style="background:linear-gradient(135deg,var(--sari),var(--turuncu))">🏆</div><div><b>TÜBİTAK Bilim Ödülü</b><span>Mühendislik bilimleri</span></div></div>
+  <div class="rozet a" data-d=".45"><div class="i" style="background:linear-gradient(135deg,var(--pembe),var(--mor))">🌍</div><div><b>Dünyanın en etkili %2'si</b><span>Stanford bilim insanları listesi</span></div></div>
+  <div class="rozet a" data-d=".7"><div class="i" style="background:linear-gradient(135deg,var(--mavi),var(--mor))">🎓</div><div><b>Academia Europaea &amp; TÜBA</b><span>Bilim akademisi üyesi</span></div></div>
+  <div class="rozet a" data-d=".95"><div class="i" style="background:linear-gradient(135deg,var(--turuncu),var(--pembe))">🤝</div><div><b>WAITRO Başkanı</b><span>Dünya araştırma kuruluşları birliği</span></div></div>
+</section>
+
+<!-- 10. çağrı -->
+<section class="kat sahne" id="s-cagri" style="padding:280px 70px 0;text-align:center">
+  <div class="a" data-d=".05"><span class="kutu">Onu canlı dinle</span></div>
+  <div class="dev a" data-d=".2" data-fx="pop" style="font-size:280px;margin-top:30px;color:var(--sari)">21</div>
+  <div class="dev a" data-d=".35" data-fx="pop" style="font-size:120px">Kasım</div>
+  <div class="acik a" data-d=".6" style="margin-top:26px"><b style="font-weight:800">T2A Özel Oturumu</b><br>Bilim, teknoloji ve girişimcilik<br><span style="color:var(--sari)">Ücretsiz · Çevrimiçi</span></div>
+  <div class="a" data-d="1.2" style="margin-top:60px;font-weight:800;font-size:44px">Katılmak için yorumlara yaz 👇</div>
+  <div class="yorum a" data-d="1.5" style="margin-top:30px;text-align:left">
+    <div class="av">🐝</div>
+    <div><div class="ad">sen</div><div class="yazi" id="yorum-yazi"></div></div>
+  </div>
+  <div id="kalpler"></div>
+  <div class="a" data-d="3.6" style="margin-top:56px;font-weight:700;font-size:34px;color:rgba(255,255,255,.8)">think2act.org · @think2actorg</div>
+</section>
+
+<div class="serit" id="serit" style="top:0;width:0"></div>
+<div id="ilerleme"><span></span></div>
+<img id="logo" src="../../marka/t2a-logo.png">
+<div class="kat" id="flash"></div>
+
+<script>
+window.DURATION = 46;
+const W = 1080, H = 1920;
+const cl = x => Math.max(0, Math.min(1, x));
+const eo = x => 1 - Math.pow(1 - x, 3);
+const io = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eb = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, p) => a + (b - a) * p;
+
+// ---------- okul sahneleri ----------
+const OKUL = [
+  { s: 8.0, e: 11.0, foto: 'okul/odtu.jpg', kaynak: 'Fotoğraf: Wikimedia Commons', yil: '1987', okul: 'ODTÜ', acik: 'Metalurji Mühendisliği\'nden mezun', kisa: 'ODTÜ' },
+  { s: 11.0, e: 14.0, foto: 'okul/newcastle.jpg', kaynak: 'Fotoğraf: Wikimedia Commons', yil: '1992', okul: 'Newcastle Üniversitesi', acik: 'İngiltere\'de doktora', kisa: 'NCL' },
+  { s: 14.0, e: 17.0, foto: 'okul/anadolu.jpg', kaynak: 'Fotoğraf: Wikimedia Commons', yil: '2001', okul: 'Anadolu Üniversitesi', acik: 'Seramik mühendisliğinde profesör', kisa: 'AÜ' },
+  { s: 17.0, e: 20.0, foto: 'okul/sabanci.jpg', kaynak: 'Fotoğraf: Wikimedia Commons', yil: '2011', okul: 'Sabancı Üniversitesi', acik: 'Rektör yardımcısı', kisa: 'SÜ' },
+  { s: 20.0, e: 23.5, foto: 'okul/tubitak.jpg', kaynak: 'Fotoğraf: Wikimedia Commons', yil: '2018', okul: 'TÜBİTAK Başkanı', acik: '6 yıl boyunca Türkiye\'nin bilim kurumunun başında', kisa: 'TÜBİTAK' },
+  { s: 23.5, e: 27.0, foto: 'foto/itu.jpg', kaynak: 'Fotoğraf: İTÜ', yil: '2024', okul: 'İTÜ Rektörü', acik: 'İstanbul Teknik Üniversitesi\'nin başında', kisa: 'İTÜ', portre: true },
+];
+const okKap = document.getElementById('okullar');
+OKUL.forEach((o, i) => {
+  okKap.insertAdjacentHTML('beforeend', `
+  <section class="kat sahne okul-s" id="okul-${i}">
+    <div class="yok" style="font-size:${o.kisa.length > 4 ? 220 : 300}px;background:radial-gradient(circle at 30% 30%, #2b4ea8, transparent 60%), radial-gradient(circle at 80% 70%, #6b2fb3, transparent 55%);color:rgba(255,200,61,.22)">${o.kisa}</div>
+    ${o.portre ? `<img class="tam bg" src="${o.foto}" style="filter:blur(40px) brightness(.6);transform:scale(1.2)">` : ''}
+    <img class="tam" data-src="${o.foto}" style="${o.portre ? 'top:250px;height:1080px;object-fit:contain' : ''}">
+    <div class="kat karart"></div>
+    <div class="kaynak">${o.kaynak}</div>
+    <div class="alt-blok">
+      <div class="yil a" data-d=".1" data-fx="pop">${o.yil}</div>
+      <div class="okul a" data-d=".25" data-fx="pop">${o.okul}</div>
+      <div class="acik a" data-d=".45">${o.acik}</div>
+    </div>
+  </section>`);
+  o.el = document.getElementById('okul-' + i);
+});
+const fotoTamam = [...document.querySelectorAll('img[data-src]')].map(img => new Promise(r => {
+  img.onload = () => { img.closest('section').querySelector('.yok').style.display = 'none'; r(); };
+  img.onerror = () => { img.style.display = 'none'; img.closest('section').querySelector('.kaynak').style.display = 'none'; r(); };
+  img.src = img.dataset.src;
+}));
+window.hazir = () => Promise.all(fotoTamam);
+
+// ---------- sahne listesi ----------
+const SAHNE = [
+  { el: document.getElementById('s-kanca'), s: 0, e: 3.6 },
+  { el: document.getElementById('s-harita'), s: 3.6, e: 8.0 },
+  ...OKUL.map(o => ({ el: o.el, s: o.s, e: o.e, kb: true })),
+  { el: document.getElementById('s-montaj'), s: 27.0, e: 33.5 },
+  { el: document.getElementById('s-odul'), s: 33.5, e: 38.0 },
+  { el: document.getElementById('s-cagri'), s: 38.0, e: 46.0, son: true },
+];
+SAHNE.forEach(S => {
+  S.parca = [...S.el.querySelectorAll('.a')].map(a => ({ a, d: +a.dataset.d || 0, fx: a.dataset.fx }));
+  S.img = S.el.querySelector('img.tam[data-src]') || S.el.querySelector('img.tam');
+});
+
+// ---------- harita ----------
+const C = { eskisehir: [30.52, 39.78], ankara: [32.78, 39.89], newcastle: [-1.62, 54.98], istanbul: [29.0, 41.05] };
+const ROTA = [['eskisehir', '1965'], ['ankara', '1987'], ['newcastle', '1992'], ['eskisehir', '2001'], ['istanbul', '2011'], ['ankara', '2018'], ['istanbul', '2024']];
+const ulkeler = topojson.feature(WORLD, WORLD.objects.countries).features;
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+document.getElementById('harita').appendChild(svg);
+const mk = (tag, cls, p = svg) => { const e = document.createElementNS(NS, tag); if (cls) e.setAttribute('class', cls); p.appendChild(e); return e; };
+const dz = mk('rect', 'deniz'); dz.setAttribute('width', W); dz.setAttribute('height', H);
+const uY = ulkeler.map(f => ({ f, el: mk('path', 'ulke' + (f.properties.name === 'Turkey' ? ' tr' : '')) }));
+const rotaEl = mk('path', 'rota');
+const pinler = Object.entries(C).map(([k, ll]) => {
+  const g = mk('g', 'pin'); const c = mk('circle', '', g); c.setAttribute('r', 16);
+  const tx = mk('text', '', g); const y = mk('text', 'y', g);
+  const ad = { eskisehir: 'Eskişehir', ankara: 'Ankara', newcastle: 'Newcastle', istanbul: 'İstanbul' }[k];
+  const sol = k === 'eskisehir';
+  tx.textContent = ad; tx.setAttribute('x', sol ? -28 : 28); tx.setAttribute('y', sol ? 36 : -8);
+  y.setAttribute('x', sol ? -28 : 28); y.setAttribute('y', sol ? 72 : 30);
+  if (sol) { tx.setAttribute('text-anchor', 'end'); y.setAttribute('text-anchor', 'end'); }
+  return { k, ll, g, y };
+});
+const segs = [];
+for (let i = 1; i < ROTA.length; i++) segs.push(d3.geoInterpolate(C[ROTA[i - 1][0]], C[ROTA[i][0]]));
+function haritaCiz(lt) {
+  // hızlı yakınlaşma: Avrupa genel görünüm, sonra Türkiye
+  const p = io(cl((lt - 2.6) / 1.6));
+  const lon = lerp(14, 31, p), lat = lerp(47.5, 40.2, p), sc = Math.exp(lerp(Math.log(1250), Math.log(3800), p));
+  const proj = d3.geoMercator().center([lon, lat]).scale(sc).translate([W / 2, H * 0.38]);
+  const yol = d3.geoPath(proj);
+  for (const u of uY) u.el.setAttribute('d', yol(u.f) || '');
+  const ilerle = cl((lt - 0.3) / 2.6) * segs.length;
+  const pts = [];
+  for (let i = 0; i < segs.length; i++) {
+    const q = cl(ilerle - i); if (q <= 0) break;
+    for (let k = 0; k <= 24; k++) { if (k / 24 > q) break; pts.push(proj(segs[i](k / 24))); }
+    pts.push(proj(segs[i](q)));
+  }
+  rotaEl.setAttribute('d', pts.length ? 'M' + pts.map(v => v[0].toFixed(1) + ',' + v[1].toFixed(1)).join('L') : '');
+  for (const P of pinler) {
+    const ilk = ROTA.findIndex(r => r[0] === P.k);
+    const gorunur = cl((ilerle - ilk + 1) * 3);
+    const ziyaret = ROTA.filter((r, i) => r[0] === P.k && i <= ilerle + 0.01).map(r => r[1]);
+    P.y.textContent = ziyaret.join(' · ');
+    const [x, y] = proj(P.ll);
+    P.g.setAttribute('transform', `translate(${x},${y}) scale(${0.5 + 0.5 * eb(gorunur)})`);
+    P.g.style.opacity = gorunur;
+  }
+}
+
+// ---------- klipler ----------
+const KLIP = { r1: 150, k1: 88, k2: 40, k3: 33, k4: 40 };
+const kare = (ad, lt) => `klip/${ad}/${String(Math.min(KLIP[ad], Math.max(1, Math.floor(lt * 30) + 1))).padStart(4, '0')}.jpg`;
+const bekle = [];
+const kareAyarla = (img, src) => { if (img.getAttribute('src') !== src) { img.setAttribute('src', src); bekle.push(img.decode().catch(() => 0)); } };
+const MONTAJ = [['k1', 88], ['k3', 33], ['k2', 40], ['k4', 40]];
+const kesimler = [];
+{ let t = 27; for (const [, n] of MONTAJ) { kesimler.push(t); t += n / 30; } }
+
+// ---------- kovan yorumu ----------
+const yorumYazi = document.getElementById('yorum-yazi');
+const kalpKap = document.getElementById('kalpler');
+const KALP = ['❤️', '🐝', '🔥', '🐝', '❤️', '🙌', '🐝', '💛'];
+KALP.forEach((k, i) => kalpKap.insertAdjacentHTML('beforeend', `<div class="kalp" data-i="${i}">${k}</div>`));
+const kalpler = [...kalpKap.children];
+
+const flash = document.getElementById('flash'), serit = document.getElementById('serit'), ilerleme = document.querySelector('#ilerleme span');
+
+window.seek = t => {
+  bekle.length = 0;
+  for (const S of SAHNE) {
+    const lt = t - S.s, len = S.e - S.s;
+    if (t < S.s - 0.001 || t >= S.e) { S.el.style.opacity = 0; continue; }
+    // giriş: aşağıdan hızlı kayma; çıkış: hızlı yukarı itme
+    const gir = eo(cl(lt / 0.35)), cik = S.son ? 0 : cl((lt - (len - 0.22)) / 0.22);
+    S.el.style.opacity = 1;
+    S.el.style.transform = `translateY(${(1 - gir) * 240 - cik * 300}px) scale(${1 - cik * 0.04})`;
+    S.el.style.filter = cik ? `brightness(${1 + cik})` : 'none';
+    if (S.img && S.kb) S.img.style.transform = `scale(${1.08 + 0.10 * (lt / len)}) translateX(${(lt / len - 0.5) * -30}px)`;
+    for (const P of S.parca) {
+      const p = cl((lt - P.d) / (P.fx === 'pop' ? 0.45 : 0.4));
+      if (P.fx === 'pop') {
+        const e = eb(p);
+        P.a.style.opacity = cl(p * 3);
+        P.a.style.transform = `translateY(${(1 - e) * 80}px) scale(${0.8 + 0.2 * e})`;
+      } else {
+        const e = eo(p);
+        P.a.style.opacity = e;
+        P.a.style.transform = `translateY(${(1 - e) * 50}px)`;
+      }
+    }
+  }
+  // kanca: röportaj
+  if (t < 3.7) {
+    const img = document.getElementById('kanca-img');
+    kareAyarla(img, kare('r1', t + 0.3));
+    img.style.transform = `scale(${1.02 + t * 0.02})`;
+  }
+  if (t >= 3.6 && t < 8.1) haritaCiz(t - 3.6);
+  // montaj
+  if (t >= 27 && t < 33.6) {
+    let u = t - 27, sec = MONTAJ[MONTAJ.length - 1][0], yerel = 99;
+    for (const [ad, n] of MONTAJ) { const d = n / 30; if (u < d) { sec = ad; yerel = u; break; } u -= d; }
+    const img = document.getElementById('montaj-img');
+    kareAyarla(img, kare(sec, yerel));
+    img.style.transform = `scale(${1.05 + 0.03 * Math.sin(t)})`;
+  }
+  // kovan yazısı + uçuşan kalpler
+  const lc = t - 38;
+  const metin = 'KOVAN';
+  const n = Math.floor(cl((lc - 2.0) / 0.9) * metin.length);
+  yorumYazi.innerHTML = metin.slice(0, n) + (lc > 1.5 && (n < metin.length || Math.floor(t * 2.5) % 2 === 0) ? '<span class="imlec"></span>' : '');
+  kalpler.forEach((k, i) => {
+    const t0 = 3.1 + i * 0.22, p = cl((lc - t0) / 1.8);
+    k.style.opacity = p > 0 && p < 1 ? Math.min(1, (1 - p) * 2.5) : 0;
+    const x = 880 + Math.sin(i * 2.3) * 70 + Math.sin(p * 6 + i) * 25;
+    k.style.left = x + 'px';
+    k.style.top = (1480 - p * 520) + 'px';
+    k.style.transform = `scale(${0.6 + p * 0.8}) rotate(${Math.sin(i + p * 4) * 20}deg)`;
+  });
+
+  // sahne geçişlerinde kısa flaş + renkli şerit
+  let f = 0;
+  const gecis = SAHNE.map(S => S.s).concat(kesimler);
+  for (const s0 of gecis) { const d = t - s0; if (d >= 0 && d < 0.18) f = Math.max(f, 0.35 * (1 - d / 0.18)); }
+  flash.style.opacity = f;
+  const sonG = Math.max(...gecis.filter(g => g <= t));
+  const sp = cl((t - sonG) / 0.5);
+  serit.style.width = (sp < 1 ? eo(sp) * W : W) + 'px';
+  serit.style.opacity = sp < 1 ? 1 : Math.max(0, 1 - (t - sonG - 0.5) * 2);
+  ilerleme.style.width = (cl(t / DURATION) * 100) + '%';
+  return Promise.all(bekle);
+};
+window.seek(0);
+</script>
+</body>
+</html>

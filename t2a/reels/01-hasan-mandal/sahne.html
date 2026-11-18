@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Hasan Mandal Kimdir</title>
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/archivo-black/400.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/montserrat/400.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/montserrat/600.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/montserrat/800.css">
+<style>
+  :root {
+    --mavi: #2a6fdb; --mor: #8e2a9c; --pembe: #d63d8f; --turuncu: #f06a1d; --sari: #f7b52b;
+    --koyu: #120a2a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--koyu); }
+  body { font-family: 'Montserrat', sans-serif; color: #fff; }
+  #bg, #grain, .sahne { position: absolute; inset: 0; }
+  #bg { background: var(--koyu); }
+  .blob { position: absolute; border-radius: 50%; filter: blur(140px); opacity: .85; will-change: transform; }
+  #grain { opacity: .10; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  #vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(10,4,25,.65) 100%); }
+
+  .sahne { display: flex; flex-direction: column; justify-content: center; padding: 0 90px 160px; opacity: 0; }
+  .a { opacity: 0; will-change: transform, opacity, filter; }
+  .kicker { font-weight: 600; font-size: 34px; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.8); margin-bottom: 34px; display: flex; align-items: center; gap: 20px; }
+  .kicker b { font-family: 'Archivo Black'; font-weight: 400; color: var(--sari); letter-spacing: .05em; }
+  .kicker i { flex: 0 0 70px; height: 4px; background: linear-gradient(90deg, var(--sari), var(--pembe)); border-radius: 2px; }
+  .dev { font-family: 'Archivo Black', sans-serif; line-height: .92; letter-spacing: -.02em; text-transform: uppercase; }
+  .grad { background: linear-gradient(95deg, #6fb1ff 0%, #c86bf0 35%, #ff6fae 65%, #ffb547 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .metin { font-size: 52px; font-weight: 600; line-height: 1.28; color: rgba(255,255,255,.94); }
+  .metin em { font-style: normal; color: var(--sari); font-weight: 800; }
+  .chip { display: inline-block; padding: 18px 36px; border-radius: 999px; font-weight: 800; font-size: 44px; background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.35); backdrop-filter: blur(10px); }
+  .kart { background: rgba(255,255,255,.10); border: 2px solid rgba(255,255,255,.22); border-radius: 40px; padding: 44px 50px; backdrop-filter: blur(14px); }
+  .satir { display: flex; align-items: center; gap: 32px; font-size: 46px; font-weight: 700; line-height: 1.2; padding: 30px 40px; margin-bottom: 26px; border-radius: 32px; background: rgba(255,255,255,.10); border: 2px solid rgba(255,255,255,.2); }
+  .satir .ikon { flex: 0 0 92px; height: 92px; border-radius: 26px; display: grid; place-items: center; font-size: 52px; }
+  .satir small { display: block; font-size: 32px; font-weight: 600; color: rgba(255,255,255,.75); margin-top: 6px; }
+
+  #ilerleme { position: absolute; top: 70px; left: 60px; right: 60px; display: flex; gap: 10px; }
+  #ilerleme div { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.25); overflow: hidden; }
+  #ilerleme span { display: block; height: 100%; width: 0; background: #fff; }
+  #logo { position: absolute; top: 120px; left: 60px; height: 74px; filter: drop-shadow(0 4px 16px rgba(0,0,0,.35)); }
+  #etiket { position: absolute; top: 132px; right: 60px; font-weight: 800; font-size: 30px; letter-spacing: .14em; padding: 12px 26px; border-radius: 999px; background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.3); }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="bg">
+  <div class="blob" id="b1" style="width:1100px;height:1100px;background:var(--mavi)"></div>
+  <div class="blob" id="b2" style="width:1000px;height:1000px;background:var(--mor)"></div>
+  <div class="blob" id="b3" style="width:900px;height:900px;background:var(--pembe)"></div>
+  <div class="blob" id="b4" style="width:850px;height:850px;background:var(--turuncu)"></div>
+</div>
+<div id="vignette"></div>
+
+<!-- 1: kanca -->
+<section class="sahne" data-s="0" data-e="3">
+  <div class="kicker a" data-d=".15"><i></i>İTÜ'nün rektörü</div>
+  <div class="dev a" data-d=".25" data-fx="pop" style="font-size:196px">Hasan</div>
+  <div class="dev a" data-d=".4" data-fx="pop" style="font-size:196px">Mandal</div>
+  <div class="dev grad a" data-d=".7" data-fx="pop" style="font-size:150px;margin-top:20px;text-transform:none">kimdir?</div>
+</section>
+
+<!-- 2: doğum + ODTÜ -->
+<section class="sahne" data-s="3" data-e="6.5">
+  <div class="kicker a" data-d=".05"><b>01</b><i></i>Başlangıç</div>
+  <div class="dev grad a" data-d=".15" data-fx="pop" style="font-size:300px" data-sayac="1940:1965">1965</div>
+  <div class="metin a" data-d=".45" style="margin-top:30px"><em>Eskişehir</em>'de doğdu.</div>
+  <div class="metin a" data-d=".7" style="margin-top:26px">1987'de <em>ODTÜ Metalurji Mühendisliği</em>'nden mezun oldu.</div>
+</section>
+
+<!-- 3: doktora -->
+<section class="sahne" data-s="6.5" data-e="10">
+  <div class="kicker a" data-d=".05"><b>02</b><i></i>Yurt dışında doktora</div>
+  <div class="dev a" data-d=".15" data-fx="pop" style="font-size:126px">Newcastle</div>
+  <div class="dev grad a" data-d=".3" data-fx="pop" style="font-size:118px">Üniversitesi</div>
+  <div class="metin a" data-d=".55" style="margin-top:34px">Doktorasını İngiltere'de tamamladı.</div>
+  <div class="a" data-d=".8" style="margin-top:40px"><span class="chip">1992</span></div>
+</section>
+
+<!-- 4: Anadolu Üni -->
+<section class="sahne" data-s="10" data-e="13.5">
+  <div class="kicker a" data-d=".05"><b>03</b><i></i>Seramik bilimi</div>
+  <div class="dev a" data-d=".15" data-fx="pop" style="font-size:132px">Anadolu</div>
+  <div class="dev grad a" data-d=".3" data-fx="pop" style="font-size:118px">Üniversitesi</div>
+  <div class="metin a" data-d=".55" style="margin-top:34px">Seramik mühendisliği bölümünde akademisyen oldu.</div>
+  <div class="metin a" data-d=".8" style="margin-top:26px"><em>2001</em>'de profesör unvanını aldı.</div>
+</section>
+
+<!-- 5: Sabancı -->
+<section class="sahne" data-s="13.5" data-e="17">
+  <div class="kicker a" data-d=".05"><b>04</b><i></i>Sabancı Üniversitesi</div>
+  <div class="dev a" data-d=".15" data-fx="pop" style="font-size:150px">Rektör</div>
+  <div class="dev grad a" data-d=".3" data-fx="pop" style="font-size:132px">Yardımcısı</div>
+  <div class="metin a" data-d=".6" style="margin-top:34px">Araştırma ve lisansüstü politikalarını yönetti.</div>
+</section>
+
+<!-- 6: TÜBİTAK -->
+<section class="sahne" data-s="17" data-e="21">
+  <div class="kicker a" data-d=".05"><b>05</b><i></i>Türkiye'nin bilim kurumu</div>
+  <div class="dev a" data-d=".15" data-fx="pop" style="font-size:190px">TÜBİTAK</div>
+  <div class="dev grad a" data-d=".3" data-fx="pop" style="font-size:150px">Başkanı</div>
+  <div class="kart a" data-d=".65" style="margin-top:50px;display:flex;align-items:center;gap:40px">
+    <div class="dev" style="font-size:120px;color:var(--sari)" data-sayac="0:6" data-sayac-d=".75">6</div>
+    <div class="metin" style="font-size:46px">yıl boyunca<br><b style="font-weight:800">2018 – 2024</b></div>
+  </div>
+</section>
+
+<!-- 7: İTÜ -->
+<section class="sahne" data-s="21" data-e="24.5">
+  <div class="kicker a" data-d=".05"><b>06</b><i></i>Bugün</div>
+  <div class="dev grad a" data-d=".15" data-fx="pop" style="font-size:300px">İTÜ</div>
+  <div class="dev a" data-d=".35" data-fx="pop" style="font-size:150px">Rektörü</div>
+  <div class="metin a" data-d=".65" style="margin-top:34px">Ağustos 2024'ten beri <em>İstanbul Teknik Üniversitesi</em>'nin başında.</div>
+</section>
+
+<!-- 8: öne çıkanlar -->
+<section class="sahne" data-s="24.5" data-e="29">
+  <div class="kicker a" data-d=".05"><i></i>Öne çıkanlar</div>
+  <div class="satir a" data-d=".2"><div class="ikon" style="background:linear-gradient(135deg,var(--sari),var(--turuncu))">🏆</div><div>TÜBİTAK Bilim Ödülü<small>Mühendislik bilimleri</small></div></div>
+  <div class="satir a" data-d=".55"><div class="ikon" style="background:linear-gradient(135deg,var(--pembe),var(--mor))">🌍</div><div>Dünyanın en etkili %2'si<small>Stanford bilim insanları listesi</small></div></div>
+  <div class="satir a" data-d=".9"><div class="ikon" style="background:linear-gradient(135deg,var(--mavi),var(--mor))">🎓</div><div>Academia Europaea &amp; TÜBA<small>Bilim akademisi üyesi</small></div></div>
+  <div class="satir a" data-d="1.25"><div class="ikon" style="background:linear-gradient(135deg,var(--turuncu),var(--pembe))">🤝</div><div>WAITRO Başkanı<small>Dünya Endüstriyel ve Teknolojik Araştırma Kuruluşları Birliği</small></div></div>
+</section>
+
+<!-- 9: çağrı -->
+<section class="sahne" data-s="29" data-e="35" style="align-items:center;text-align:center">
+  <div class="kicker a" data-d=".1" style="justify-content:center"><i></i>Onu dinleme fırsatı<i style="background:linear-gradient(90deg,var(--pembe),var(--sari))"></i></div>
+  <div class="dev a" data-d=".2" data-fx="pop" style="font-size:250px">21</div>
+  <div class="dev grad a" data-d=".35" data-fx="pop" style="font-size:150px">Kasım</div>
+  <div class="kart a" data-d=".7" style="margin-top:50px">
+    <div style="font-weight:800;font-size:40px;letter-spacing:.12em;color:var(--sari);text-transform:uppercase">T2A Özel Oturumu</div>
+    <div class="metin" style="margin-top:18px;font-size:46px">Bilim, teknoloji ve girişimcilik üzerine bir söyleşi</div>
+  </div>
+  <div class="a" data-d="1.1" style="margin-top:46px;font-weight:800;font-size:42px">Ücretsiz · Çevrimiçi</div>
+  <div class="a" data-d="1.35" style="margin-top:30px;font-weight:600;font-size:38px;color:rgba(255,255,255,.85)">think2act.org · @think2actorg</div>
+</section>
+
+<div id="ilerleme"></div>
+<img id="logo" src="../../marka/t2a-logo.png">
+<div id="etiket">TANIYALIM</div>
+<div id="grain"></div>
+<div id="flash"></div>
+
+<script>
+window.DURATION = 35;
+const sahneler = [...document.querySelectorAll('.sahne')].map(el => ({
+  el, s: +el.dataset.s, e: +el.dataset.e,
+  parca: [...el.querySelectorAll('.a')].map(a => ({ a, d: +a.dataset.d || 0, fx: a.dataset.fx })),
+  sayac: [...el.querySelectorAll('[data-sayac]')].map(c => {
+    const [x, y] = c.dataset.sayac.split(':').map(Number);
+    return { c, x, y, d: +(c.dataset.sayacD || c.dataset.d || 0) };
+  }),
+}));
+const bar = document.getElementById('ilerleme');
+sahneler.forEach(() => bar.insertAdjacentHTML('beforeend', '<div><span></span></div>'));
+const dolgu = [...bar.querySelectorAll('span')];
+const blobs = ['b1', 'b2', 'b3', 'b4'].map(id => document.getElementById(id));
+const flash = document.getElementById('flash');
+
+const cl = x => Math.max(0, Math.min(1, x));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeBack = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+
+window.seek = t => {
+  // arka plan: yavaşça dolaşan renk lekeleri, sahneye göre hafif kayma
+  const sc = sahneler.findIndex(s => t >= s.s && t < s.e);
+  const k = sc < 0 ? 0 : sc;
+  const yol = [
+    [-300, -200, 40, 1], [500, 300, 33, 1.3], [-200, 1100, 27, 0.8], [450, 1300, 37, 1.1],
+  ];
+  blobs.forEach((b, i) => {
+    const [x0, y0, per, amp] = yol[i];
+    const ph = (t / per) * Math.PI * 2 + i * 1.7 + k * 0.6;
+    const x = x0 + Math.sin(ph) * 260 * amp;
+    const y = y0 + Math.cos(ph * 0.8) * 320 * amp;
+    b.style.transform = `translate(${x}px, ${y}px) scale(${1 + 0.12 * Math.sin(ph * 1.3)})`;
+  });
+
+  for (const [i, S] of sahneler.entries()) {
+    const lt = t - S.s, len = S.e - S.s;
+    dolgu[i].style.width = (cl(lt / len) * 100) + '%';
+    if (t < S.s - 0.01 || t >= S.e) { S.el.style.opacity = 0; continue; }
+    const son = i === sahneler.length - 1;
+    const cikis = son ? 0 : cl((lt - (len - 0.3)) / 0.3);
+    S.el.style.opacity = 1 - cikis;
+    S.el.style.transform = `scale(${1 + cikis * 0.08}) translateY(${-cikis * 40}px)`;
+    S.el.style.filter = cikis ? `blur(${cikis * 14}px)` : 'none';
+
+    for (const P of S.parca) {
+      const p = cl((lt - P.d) / (P.fx === 'pop' ? 0.5 : 0.55));
+      if (P.fx === 'pop') {
+        const e = easeBack(p);
+        P.a.style.opacity = cl(p * 2.5);
+        P.a.style.transform = `translateY(${(1 - e) * 90}px) scale(${0.85 + 0.15 * e})`;
+        P.a.style.filter = p < 1 ? `blur(${(1 - cl(p * 1.8)) * 18}px)` : 'none';
+      } else {
+        const e = easeOut(p);
+        P.a.style.opacity = e;
+        P.a.style.transform = `translateY(${(1 - e) * 60}px)`;
+        P.a.style.filter = 'none';
+      }
+    }
+    for (const C of S.sayac) {
+      const p = easeOut(cl((lt - C.d) / 1.1));
+      C.c.textContent = Math.round(C.x + (C.y - C.x) * p);
+    }
+  }
+  // sahne girişlerinde kısa beyaz parlama (ilk ve son sahnede güçlü)
+  let f = 0;
+  for (const [i, S] of sahneler.entries()) {
+    const d = t - S.s;
+    if (d >= 0 && d < 0.25) f = Math.max(f, (i === 0 || i === sahneler.length - 1 ? 0.55 : 0.12) * (1 - d / 0.25));
+  }
+  flash.style.opacity = f;
+};
+window.seek(0);
+</script>
+</body>
+</html>

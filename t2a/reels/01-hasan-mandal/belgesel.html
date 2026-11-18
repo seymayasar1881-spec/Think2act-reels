@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Hasan Mandal Belgesel</title>
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/special-elite/400.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/playfair-display/700.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/playfair-display/900.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/playfair-display/400-italic.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/courier-prime/400.css">
+<link rel="stylesheet" href="../../arac/node_modules/@fontsource/courier-prime/700.css">
+<script src="../../arac/node_modules/d3-array/dist/d3-array.min.js"></script>
+<script src="../../arac/node_modules/d3-geo/dist/d3-geo.min.js"></script>
+<script src="../../arac/node_modules/topojson-client/dist/topojson-client.min.js"></script>
+<script src="../../arac/harita-veri.js"></script>
+<style>
+  :root { --kagit: #e9dcc0; --murekkep: #2b2118; --sepya: #8a6a43; --kirmizi: #b23a2a; --koyu: #15100b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--koyu); }
+  body { font-family: 'Courier Prime', monospace; color: var(--kagit); }
+  .kat { position: absolute; inset: 0; }
+  #harita { position: absolute; inset: 0; }
+  #harita svg { width: 1080px; height: 1920px; }
+  .ulke { fill: #3b2f22; stroke: #5c4a35; stroke-width: 1.2; }
+  .ulke.tr { fill: #6b5236; stroke: #a07e55; stroke-width: 2; }
+  .deniz { fill: #1d1710; }
+  .grat { fill: none; stroke: rgba(233,220,192,.07); stroke-width: 1.5; }
+  .rota { fill: none; stroke: var(--kirmizi); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 2 16; }
+  .rota-ucak { fill: none; stroke: #e0b25a; stroke-width: 5; stroke-dasharray: 18 14; stroke-linecap: round; }
+  .pin circle.ic { fill: var(--kirmizi); stroke: var(--kagit); stroke-width: 5; }
+  .pin circle.halka { fill: none; stroke: var(--kirmizi); stroke-width: 4; }
+  .pin text { font-family: 'Special Elite'; font-size: 44px; fill: var(--kagit); paint-order: stroke; stroke: rgba(21,16,11,.85); stroke-width: 10px; }
+
+  /* başlık kartı */
+  #kart { position: absolute; left: 70px; right: 70px; bottom: 330px; padding: 46px 52px 50px; background: rgba(233,220,192,.95); color: var(--murekkep); box-shadow: 0 20px 60px rgba(0,0,0,.55); opacity: 0; transform-origin: 50% 100%; }
+  #kart::before { content: ''; position: absolute; inset: 14px; border: 2px solid rgba(43,33,24,.35); pointer-events: none; }
+  #kart .yil { font-family: 'Playfair Display'; font-weight: 900; font-size: 128px; line-height: .9; color: var(--kirmizi); }
+  #kart .baslik { font-family: 'Playfair Display'; font-weight: 700; font-size: 62px; line-height: 1.08; margin-top: 18px; }
+  #kart .metin { font-family: 'Special Elite'; font-size: 40px; line-height: 1.35; margin-top: 22px; min-height: 108px; }
+  #kart .yer { position: absolute; top: 40px; right: 52px; font-family: 'Courier Prime'; font-weight: 700; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; color: var(--sepya); }
+  .imlec { display: inline-block; width: 22px; height: 40px; background: var(--murekkep); vertical-align: -6px; margin-left: 4px; }
+
+  /* fotoğraf */
+  .foto { position: absolute; left: 50%; top: 300px; width: 760px; height: 900px; margin-left: -380px; background: #f3ead6; padding: 26px 26px 100px; box-shadow: 0 30px 80px rgba(0,0,0,.6); opacity: 0; }
+  .foto .ic { width: 100%; height: 100%; overflow: hidden; background: #2a2118; }
+  .foto img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.55) contrast(1.08) brightness(.95) saturate(.8); transform-origin: 50% 35%; }
+  .foto .alt { position: absolute; left: 0; right: 0; bottom: 26px; text-align: center; font-family: 'Special Elite'; font-size: 36px; color: var(--murekkep); }
+  .foto .kaynak { position: absolute; right: 30px; bottom: -44px; font-size: 24px; color: rgba(233,220,192,.6); }
+
+  /* giriş */
+  #giris { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; padding-bottom: 200px; }
+  #giris .ust { font-family: 'Courier Prime'; font-weight: 700; letter-spacing: .4em; font-size: 34px; color: #c9b48d; }
+  #giris .alt { font-family: 'Playfair Display'; font-style: italic; font-size: 64px; margin-top: 40px; color: var(--kagit); }
+  #giris .ad { font-family: 'Playfair Display'; font-weight: 900; font-size: 176px; line-height: .95; margin-top: 30px; letter-spacing: .02em; }
+  #giris .cizgi { width: 0; height: 4px; background: var(--kirmizi); margin: 44px auto 0; }
+  #giris .soru { font-family: 'Special Elite'; font-size: 60px; margin-top: 40px; color: #e0b25a; }
+
+  /* ödüller */
+  #oduller { padding: 330px 80px 0; opacity: 0; }
+  #oduller h2 { font-family: 'Playfair Display'; font-weight: 900; font-size: 96px; line-height: 1; }
+  #oduller .cizgi { height: 4px; background: var(--kirmizi); width: 220px; margin: 34px 0 50px; }
+  #oduller .o { font-family: 'Special Elite'; font-size: 46px; line-height: 1.3; padding: 30px 0; border-bottom: 2px dashed rgba(233,220,192,.3); opacity: 0; }
+  #oduller .o b { font-family: 'Playfair Display'; font-weight: 700; display: block; font-size: 52px; color: #e0b25a; }
+
+  /* çağrı */
+  #cagri { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 80px 260px; opacity: 0; }
+  #cagri .bilet { background: var(--kagit); color: var(--murekkep); padding: 60px 60px 56px; width: 100%; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+  #cagri .bilet::before { content: ''; position: absolute; inset: 16px; border: 3px double rgba(43,33,24,.5); }
+  #cagri .kucuk { font-family: 'Courier Prime'; font-weight: 700; letter-spacing: .3em; font-size: 30px; color: var(--sepya); }
+  #cagri .tarih { font-family: 'Playfair Display'; font-weight: 900; font-size: 170px; line-height: 1; color: var(--kirmizi); margin-top: 20px; }
+  #cagri .ay { font-family: 'Playfair Display'; font-weight: 700; font-size: 70px; margin-top: 4px; }
+  #cagri .konu { font-family: 'Special Elite'; font-size: 42px; line-height: 1.35; margin-top: 34px; }
+  #cagri .alt { font-family: 'Courier Prime'; font-weight: 700; font-size: 34px; margin-top: 50px; color: var(--kagit); letter-spacing: .08em; }
+  #cagri img { height: 110px; margin-top: 50px; }
+
+  /* montaj */
+  #montaj { opacity: 0; background: #0d0a07; }
+  #montaj img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; filter: sepia(.5) contrast(1.12) brightness(.92) saturate(.75); }
+  #montaj .serit { position: absolute; left: 0; right: 0; height: 120px; background: repeating-linear-gradient(90deg, #0d0a07 0 36px, transparent 36px 64px), #0d0a07; background-size: 64px 34px, auto; background-repeat: repeat-x; background-position: 0 43px; }
+  #montaj .serit::after { content: ''; position: absolute; left: 0; right: 0; top: 43px; height: 34px; background: repeating-linear-gradient(90deg, transparent 0 18px, rgba(233,220,192,.55) 18px 46px, transparent 46px 64px); border-radius: 6px; }
+  #montaj .ust-serit { top: 0; } #montaj .alt-serit { bottom: 0; }
+  #montaj .yazi { position: absolute; left: 70px; right: 70px; bottom: 330px; background: rgba(233,220,192,.95); color: var(--murekkep); padding: 40px 48px 44px; box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+  #montaj .yazi .k { font-family: 'Courier Prime'; font-weight: 700; font-size: 28px; letter-spacing: .16em; color: var(--sepya); }
+  #montaj .yazi .b { font-family: 'Playfair Display'; font-weight: 700; font-size: 58px; line-height: 1.08; margin-top: 12px; }
+  #montaj .yazi .m { font-family: 'Special Elite'; font-size: 38px; line-height: 1.35; margin-top: 18px; min-height: 52px; }
+  .kaynakNot { position: absolute; right: 70px; bottom: 270px; font-size: 26px; color: rgba(233,220,192,.75); font-family: 'Courier Prime'; }
+
+  /* film efektleri */
+  #vinyet { background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(8,5,2,.85) 100%); pointer-events: none; }
+  #grain { opacity: .16; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  #cizik { pointer-events: none; }
+  #cizik i { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(233,220,192,.25); }
+  #isik { background: radial-gradient(circle at 85% 10%, rgba(255,170,90,.35), transparent 45%); mix-blend-mode: screen; opacity: 0; pointer-events: none; }
+  #karartma { background: #000; opacity: 1; pointer-events: none; }
+  #logo { position: absolute; top: 90px; left: 70px; height: 70px; opacity: .95; }
+  #damga { position: absolute; top: 100px; right: 70px; font-family: 'Courier Prime'; font-weight: 700; font-size: 28px; letter-spacing: .2em; color: #c9b48d; border: 2px solid rgba(201,180,141,.6); padding: 10px 20px; }
+</style>
+</head>
+<body>
+<div id="harita" class="kat"></div>
+
+<div id="giris" class="kat">
+  <div class="ust">THINK2ACT SUNAR</div>
+  <div class="alt">Bir bilim insanının yolculuğu</div>
+  <div class="ad">HASAN<br>MANDAL</div>
+  <div class="cizgi"></div>
+  <div class="soru">kimdir?</div>
+</div>
+
+<div class="foto" id="foto-portre"><div class="ic"><img id="portre-klip"></div><div class="alt">Prof. Dr. Hasan Mandal</div><div class="kaynak"></div></div>
+<div class="foto" id="foto-itu"><div class="ic"><img data-src="foto/itu.jpg"></div><div class="alt">İTÜ Rektörü · 2024–</div><div class="kaynak"></div></div>
+
+<div id="kart"><div class="yer"></div><div class="yil"></div><div class="baslik"></div><div class="metin"></div></div>
+
+<div id="montaj" class="kat">
+  <img id="montaj-img">
+  <div class="serit ust-serit"></div><div class="serit alt-serit"></div>
+  <div class="yazi"><div class="k">İTÜ · AKADEMİK PERFORMANS ÖDÜLLERİ</div><div class="b">Bilime omuz veren bir rektör</div><div class="m"></div></div>
+  <div class="kaynakNot">Görüntü: İTÜ</div>
+</div>
+
+<div id="oduller" class="kat">
+  <h2>Onur<br>Listesi</h2>
+  <div class="cizgi"></div>
+  <div class="o"><b>TÜBİTAK Bilim Ödülü</b>Mühendislik bilimleri alanında</div>
+  <div class="o"><b>Stanford listesi</b>Dünyanın en etkili %2 bilim insanı arasında</div>
+  <div class="o"><b>Academia Europaea &amp; TÜBA</b>Bilim akademilerinin üyesi</div>
+  <div class="o"><b>WAITRO Başkanı</b>Dünya Endüstriyel ve Teknolojik Araştırma Kuruluşları Birliği</div>
+</div>
+
+<div id="cagri" class="kat">
+  <div class="bilet">
+    <div class="kucuk">T2A ÖZEL OTURUMU</div>
+    <div class="tarih">21</div>
+    <div class="ay">Kasım 2026</div>
+    <div class="konu">Prof. Dr. Hasan Mandal ile<br>bilim, teknoloji ve girişimcilik üzerine bir söyleşi</div>
+  </div>
+  <div class="alt">ÜCRETSİZ · ÇEVRİMİÇİ<br><span style="font-weight:400">think2act.org · @think2actorg</span></div>
+  <img src="../../marka/t2a-logo.png">
+</div>
+
+<div id="isik" class="kat"></div>
+<div id="vinyet" class="kat"></div>
+<div id="cizik" class="kat"></div>
+<div id="grain" class="kat"></div>
+<img id="logo" src="../../marka/t2a-logo.png">
+<div id="damga">ARŞİV · T2A</div>
+<div id="karartma" class="kat"></div>
+
+<script>
+window.DURATION = 58.5;
+const W = 1080, H = 1920;
+const cl = x => Math.max(0, Math.min(1, x));
+const io = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eo = x => 1 - Math.pow(1 - x, 3);
+const lerp = (a, b, p) => a + (b - a) * p;
+// deterministik rastgele
+const rnd = s => { const x = Math.sin(s * 12.9898) * 43758.5453; return x - Math.floor(x); };
+
+// ---------- şehirler ve sahneler ----------
+const C = {
+  eskisehir: [30.52, 39.78], ankara: [32.78, 39.89], newcastle: [-1.62, 54.98],
+  sabanci: [29.38, 40.89], itu: [29.03, 41.10],
+};
+const S = [
+  { s: 0, e: 5, tip: 'giris' },
+  { s: 5, e: 10, yer: 'eskisehir', etiket: 'Eskişehir', ust: 'Doğum', yil: '1965', baslik: 'Eskişehir', metin: 'Hikâye, Anadolu\'nun ortasında başlıyor.' },
+  { s: 10, e: 15, yer: 'ankara', etiket: 'Ankara · ODTÜ', ust: 'Lisans', yil: '1987', baslik: 'ODTÜ', metin: 'Metalurji Mühendisliği\'nden mezun oluyor.' },
+  { s: 15, e: 21, yer: 'newcastle', etiket: 'Newcastle', ust: 'İngiltere', yil: '1992', baslik: 'Newcastle Üniversitesi', metin: 'Doktorasını İngiltere\'de tamamlıyor.', ucak: true },
+  { s: 21, e: 26, yer: 'eskisehir', etiket: 'Anadolu Üniversitesi', ust: 'Akademi', yil: '2001', baslik: 'Anadolu Üniversitesi', metin: 'Seramik mühendisliğinde profesör oluyor.', ucak: true },
+  { s: 26, e: 31, yer: 'sabanci', etiket: 'Sabancı Üniversitesi', ust: 'İstanbul', yil: '2011', baslik: 'Sabancı Üniversitesi', metin: 'Rektör yardımcısı olarak araştırmayı yönetiyor.' },
+  { s: 31, e: 36, yer: 'ankara', etiket: 'TÜBİTAK', ust: 'Ankara', yil: '2018', baslik: 'TÜBİTAK Başkanı', metin: 'Altı yıl boyunca Türkiye\'nin bilim kurumunu yönetiyor.' },
+  { s: 36, e: 41, yer: 'itu', etiket: 'İTÜ', ust: 'İstanbul', yil: '2024', baslik: 'İTÜ Rektörü', metin: 'Bugün İstanbul Teknik Üniversitesi\'nin başında.', foto: 'foto-itu' },
+  { s: 41, e: 48, tip: 'montaj' },
+  { s: 48, e: 52.5, tip: 'oduller' },
+  { s: 52.5, e: 58.5, tip: 'cagri' },
+];
+
+// kamera anahtar kareleri [zaman, boylam, enlem, ölçek]
+const TR = [33.5, 38.6, 3300];
+const K = [
+  [0, 33.5, 38.6, 2600], [5, ...TR],
+  [6.2, 30.52, 38.9, 6200], [9.4, 30.52, 38.9, 6200],
+  [11, 32.78, 39.0, 6200], [14.4, 32.78, 39.0, 6200],
+  [15.6, 15.5, 46.5, 1250], [19.2, 15.5, 46.5, 1250], [20.4, -1.62, 53.6, 6500], [21, -1.62, 53.6, 6500],
+  [22.3, 15.5, 46.5, 1250], [23.3, 30.52, 38.9, 6200], [25.6, 30.52, 38.9, 6200],
+  [27, 29.3, 40.2, 6200], [30.4, 29.3, 40.2, 6200],
+  [32, 32.78, 39.0, 6200], [35.4, 32.78, 39.0, 6200],
+  [37, 29.03, 40.4, 6200], [40.4, 29.03, 40.4, 6200],
+  [42, 33.5, 38.6, 2600], [58.5, 33.5, 38.6, 2600],
+];
+function kamera(t) {
+  let i = 0;
+  while (i < K.length - 2 && t > K[i + 1][0]) i++;
+  const a = K[i], b = K[i + 1];
+  const p = io(cl((t - a[0]) / Math.max(.001, b[0] - a[0])));
+  return [lerp(a[1], b[1], p), lerp(a[2], b[2], p), Math.exp(lerp(Math.log(a[3]), Math.log(b[3]), p))];
+}
+
+// ---------- harita ----------
+const ulkeler = topojson.feature(WORLD, WORLD.objects.countries).features;
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg');
+svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+document.getElementById('harita').appendChild(svg);
+const mk = (tag, cls, parent = svg) => { const e = document.createElementNS(NS, tag); if (cls) e.setAttribute('class', cls); parent.appendChild(e); return e; };
+const deniz = mk('rect', 'deniz'); deniz.setAttribute('width', W); deniz.setAttribute('height', H);
+const grat = mk('path', 'grat');
+const ulkeYol = ulkeler.map(f => ({ f, el: mk('path', 'ulke' + (f.properties.name === 'Turkey' ? ' tr' : '')) }));
+const rotaG = mk('g');
+const pinG = mk('g');
+const graticule = d3.geoGraticule10();
+
+// ziyaret sırası (rota)
+const durak = S.filter(x => x.yer);
+const rotalar = [];
+for (let i = 1; i < durak.length; i++) {
+  const a = C[durak[i - 1].yer], b = C[durak[i].yer];
+  if (a === b) continue;
+  const el = mk('path', durak[i].ucak ? 'rota-ucak' : 'rota', rotaG);
+  rotalar.push({ a, b, t0: durak[i].s - 0.2, t1: durak[i].s + (durak[i].ucak ? 4.6 : 1.4), el, interp: d3.geoInterpolate(a, b) });
+}
+const pinler = Object.entries(C).map(([k, ll]) => {
+  const g = mk('g', 'pin', pinG);
+  const halka = mk('circle', 'halka', g), ic = mk('circle', 'ic', g), tx = mk('text', '', g);
+  ic.setAttribute('r', 14);
+  const ilk = durak.find(d => d.yer === k);
+  return { k, ll, g, halka, tx, t0: ilk ? ilk.s + 0.8 : 99 };
+});
+
+function haritaCiz(t) {
+  const [lon, lat, sc] = kamera(t);
+  const proj = d3.geoMercator().center([lon, lat]).scale(sc).translate([W / 2, H * 0.40]);
+  const yol = d3.geoPath(proj);
+  grat.setAttribute('d', yol(graticule));
+  for (const u of ulkeYol) u.el.setAttribute('d', yol(u.f) || '');
+  for (const r of rotalar) {
+    const p = io(cl((t - r.t0) / (r.t1 - r.t0)));
+    if (p <= 0) { r.el.setAttribute('d', ''); continue; }
+    const n = 60, pts = [];
+    for (let i = 0; i <= n * p; i++) pts.push(proj(r.interp(i / n)));
+    pts.push(proj(r.interp(p)));
+    r.el.setAttribute('d', 'M' + pts.map(q => q.map(v => v.toFixed(1)).join(',')).join('L'));
+    const sonra = S.find(x => x.yer && x.s > r.t0 + 0.3);
+    r.el.style.opacity = sonra && t > sonra.s ? 0.22 : 1;
+  }
+  const aktif = S.find(x => t >= x.s && t < x.e);
+  for (const P of pinler) {
+    const v = cl((t - P.t0) / 0.4);
+    const [x, y] = proj(P.ll);
+    P.g.style.opacity = v;
+    P.g.setAttribute('transform', `translate(${x},${y}) scale(${0.6 + 0.4 * eo(v)})`);
+    const aktifMi = aktif && aktif.yer === P.k;
+    const ph = ((t * 1.2) % 1);
+    P.halka.setAttribute('r', aktifMi ? 14 + ph * 46 : 0);
+    P.halka.style.opacity = aktifMi ? 1 - ph : 0;
+    const kisa = { eskisehir: 'Eskişehir', ankara: 'Ankara', newcastle: 'Newcastle', sabanci: '', itu: 'İstanbul' };
+    const et = aktifMi ? aktif.etiket : kisa[P.k];
+    P.tx.textContent = et;
+    P.tx.setAttribute('x', 30); P.tx.setAttribute('y', -24);
+    P.tx.style.opacity = aktifMi ? cl((t - aktif.s - 0.9) / 0.4) : (aktif ? 0 : 0.55);
+  }
+}
+
+// ---------- fotoğraflar (dosya yoksa gizlenir) ----------
+const fotoVar = {};
+document.querySelectorAll('.foto img[data-src]').forEach(img => {
+  const id = img.closest('.foto').id;
+  img.onload = () => { fotoVar[id] = true; };
+  img.onerror = () => { fotoVar[id] = false; };
+  img.src = img.dataset.src;
+});
+window.hazir = () => Promise.all([...document.querySelectorAll('.foto img[data-src]')].map(i => i.complete ? 1 : new Promise(r => { i.onload = () => { fotoVar[i.closest('.foto').id] = true; r(); }; i.onerror = () => r(); })));
+
+function fotoGoster(id, t, t0, t1) {
+  const el = document.getElementById(id);
+  if (!fotoVar[id] || t < t0 || t > t1) { el.style.opacity = 0; return; }
+  const gir = eo(cl((t - t0) / 0.6)), cik = cl((t - (t1 - 0.5)) / 0.5);
+  el.style.opacity = gir * (1 - cik);
+  const rot = (id.length % 2 ? -3 : 2.5);
+  el.style.transform = `translateY(${(1 - gir) * 120 - cik * 60}px) rotate(${rot * (1 - gir * 0.3)}deg) scale(${0.92 + 0.08 * gir})`;
+  const kb = cl((t - t0) / (t1 - t0));
+  el.querySelector('img').style.transform = `scale(${1.04 + kb * 0.10}) translateY(${-kb * 14}px)`;
+}
+
+// ---------- kart ----------
+const kart = document.getElementById('kart');
+const kYil = kart.querySelector('.yil'), kBas = kart.querySelector('.baslik'), kMet = kart.querySelector('.metin'), kYer = kart.querySelector('.yer');
+let oncekiYil = 1965;
+S.forEach(x => { if (x.yil) { x.yilOnce = oncekiYil; oncekiYil = +x.yil; } });
+
+function kartCiz(t) {
+  const a = S.find(x => t >= x.s && t < x.e && x.yer);
+  if (!a) { kart.style.opacity = 0; return; }
+  const lt = t - a.s, len = a.e - a.s;
+  const fotoVarMi = a.foto && fotoVar[a.foto];
+  const gir = eo(cl((lt - 0.5) / 0.5)), cik = cl((lt - (len - 0.35)) / 0.35);
+  kart.style.opacity = gir * (1 - cik);
+  kart.style.transform = `translateY(${(1 - gir) * 80}px) rotate(${(1 - gir) * -2}deg)`;
+  kart.style.bottom = fotoVarMi ? '200px' : '330px';
+  kYer.textContent = a.ust;
+  const yp = eo(cl((lt - 0.5) / 1.0));
+  kYil.textContent = Math.round(lerp(a.yilOnce, +a.yil, yp)) + (a.yil === '2024' && yp >= 1 ? ' –' : '');
+  kBas.textContent = a.baslik;
+  const n = Math.floor(cl((lt - 1.1) / 1.8) * a.metin.length);
+  const imlec = (Math.floor(t * 2.5) % 2 === 0) ? '<span class="imlec"></span>' : '';
+  kMet.innerHTML = a.metin.slice(0, n).replace(/</g, '&lt;') + (n < a.metin.length || lt < 3.6 ? imlec : '');
+}
+
+// ---------- tam ekran sahneler ----------
+const giris = document.getElementById('giris'), oduller = document.getElementById('oduller'), cagri = document.getElementById('cagri');
+function girisCiz(t) {
+  const fotoVarMi = fotoVar['foto-portre'];
+  if (t >= 5.2) { giris.style.opacity = 0; fotoGoster('foto-portre', t, 0, 0); return; }
+  const cik = cl((t - 4.6) / 0.5);
+  giris.style.opacity = 1 - cik;
+  const q = s => giris.querySelector(s);
+  q('.ust').style.opacity = cl((t - 0.3) / 0.5) * (fotoVarMi ? 1 - cl((t - 1.8) / 0.4) : 1);
+  q('.alt').style.opacity = cl((t - 0.9) / 0.6) * (fotoVarMi ? 1 - cl((t - 1.8) / 0.4) : 1);
+  const adP = eo(cl((t - 1.6) / 0.8));
+  q('.ad').style.opacity = adP;
+  q('.ad').style.transform = `scale(${1.25 - 0.25 * adP})`;
+  q('.ad').style.letterSpacing = (0.02 + (1 - adP) * 0.2) + 'em';
+  q('.cizgi').style.width = (eo(cl((t - 2.3) / 0.7)) * 420) + 'px';
+  q('.soru').style.opacity = cl((t - 2.8) / 0.5);
+  // fotoğraf varsa: ad yukarıda değil, fotoğrafın altında
+  if (fotoVarMi) {
+    giris.style.justifyContent = 'flex-end';
+    giris.style.paddingBottom = '300px';
+    fotoGoster('foto-portre', t, 1.4, 4.9);
+    document.getElementById('foto-portre').style.top = '240px';
+  }
+}
+function odulCiz(t) {
+  const a = S.find(x => x.tip === 'oduller');
+  if (t < a.s || t >= a.e) { oduller.style.opacity = 0; return; }
+  const lt = t - a.s;
+  oduller.style.opacity = cl(lt / 0.4) * (1 - cl((lt - (a.e - a.s - 0.35)) / 0.35));
+  oduller.querySelectorAll('.o').forEach((o, i) => {
+    const p = eo(cl((lt - 0.5 - i * 0.6) / 0.5));
+    o.style.opacity = p;
+    o.style.transform = `translateX(${(1 - p) * -60}px)`;
+  });
+}
+function cagriCiz(t) {
+  const a = S.find(x => x.tip === 'cagri');
+  if (t < a.s) { cagri.style.opacity = 0; return; }
+  const lt = t - a.s;
+  cagri.style.opacity = cl(lt / 0.5);
+  const b = cagri.querySelector('.bilet');
+  const p = eo(cl((lt - 0.2) / 0.7));
+  b.style.transform = `translateY(${(1 - p) * 200}px) rotate(${(1 - p) * 6 - 1}deg)`;
+  cagri.querySelector('.alt').style.opacity = cl((lt - 1.2) / 0.5);
+  cagri.querySelector('img').style.opacity = cl((lt - 1.6) / 0.5);
+}
+
+// ---------- video klipleri (kare dizileri) ----------
+const KLIP = { r1: 150, k1: 88, k2: 40, k3: 33, k4: 40 };
+fotoVar['foto-portre'] = true;
+const kare = (ad, lt) => `klip/${ad}/${String(Math.min(KLIP[ad], Math.max(1, Math.floor(lt * 30) + 1))).padStart(4, '0')}.jpg`;
+const bekle = [];
+function kareAyarla(img, src) {
+  if (img.getAttribute('src') === src) return;
+  img.setAttribute('src', src);
+  bekle.push(img.decode().catch(() => 0));
+}
+const montaj = document.getElementById('montaj'), mImg = document.getElementById('montaj-img');
+const mYazi = montaj.querySelector('.yazi'), mMet = montaj.querySelector('.m');
+const MONTAJ = [['k1', 88], ['k2', 40], ['k3', 33], ['k4', 40]];
+const mMetin = 'Akademisyenleri ödüllendiriyor, araştırmayı destekliyor.';
+function montajCiz(t) {
+  const a = S.find(x => x.tip === 'montaj');
+  if (t < a.s - 0.01 || t >= a.e) { montaj.style.opacity = 0; return; }
+  const lt = t - a.s;
+  montaj.style.opacity = cl(lt / 0.3) * (1 - cl((lt - (a.e - a.s - 0.35)) / 0.35));
+  let u = lt, sec = MONTAJ[MONTAJ.length - 1][0], yerel = 0;
+  for (const [ad, n] of MONTAJ) { const d = n / 30; if (u < d) { sec = ad; yerel = u; break; } u -= d; yerel = d; }
+  kareAyarla(mImg, kare(sec, yerel));
+  mImg.style.transform = `scale(${1.06 + 0.04 * Math.sin(lt)})`;
+  const g = eo(cl((lt - 0.6) / 0.5));
+  mYazi.style.opacity = g;
+  mYazi.style.transform = `translateY(${(1 - g) * 80}px)`;
+  const n = Math.floor(cl((lt - 1.2) / 2.0) * mMetin.length);
+  mMet.textContent = mMetin.slice(0, n);
+}
+
+// ---------- film efektleri ----------
+const cizik = document.getElementById('cizik');
+for (let i = 0; i < 3; i++) cizik.appendChild(document.createElement('i'));
+const grain = document.getElementById('grain'), isik = document.getElementById('isik'), karartma = document.getElementById('karartma');
+const harita = document.getElementById('harita');
+function filmCiz(t) {
+  const fr = Math.floor(t * 24);
+  grain.style.backgroundPosition = `${Math.floor(rnd(fr) * 400)}px ${Math.floor(rnd(fr + 7) * 400)}px`;
+  [...cizik.children].forEach((c, i) => {
+    const on = rnd(fr * 3 + i) > 0.7;
+    c.style.opacity = on ? 0.3 + rnd(fr + i) * 0.5 : 0;
+    c.style.left = (rnd(fr * 5 + i * 11) * W) + 'px';
+  });
+  const flick = 0.96 + rnd(fr * 2) * 0.06;
+  document.body.style.filter = `brightness(${flick})`;
+  // sahne geçişlerinde ışık sızıntısı
+  let leak = 0;
+  const kesimler = S.map(x => x.s).concat([41 + 88 / 30, 41 + 128 / 30, 41 + 161 / 30]);
+  for (const s0 of kesimler) { const d = t - s0; if (d > -0.3 && d < 0.6) leak = Math.max(leak, 1 - Math.abs(d - 0.1) / 0.5); }
+  isik.style.opacity = cl(leak) * 0.9;
+  // açılış ve kapanış karartması
+  karartma.style.opacity = Math.max(1 - cl(t / 0.6), cl((t - (DURATION - 0.6)) / 0.6));
+  // giriş, ödüller ve çağrıda harita koyulaşsın
+  const tam = (t < 5 ? 1 - cl((t - 4.4) / 0.6) : 0) + cl((t - 41) / 0.6);
+  harita.style.opacity = 1 - 0.75 * cl(tam);
+}
+
+window.seek = t => {
+  bekle.length = 0;
+  if (t < 5.2) kareAyarla(document.getElementById('portre-klip'), kare('r1', Math.max(0, t - 0.2)));
+  montajCiz(t);
+  haritaCiz(t);
+  kartCiz(t);
+  girisCiz(t);
+  fotoGoster('foto-itu', t, 36.4, 40.8);
+  odulCiz(t);
+  cagriCiz(t);
+  filmCiz(t);
+  return Promise.all(bekle);
+};
+window.seek(0);
+</script>
+</body>
+</html>
