@@ -150,7 +150,7 @@ const okKap = document.getElementById('okullar');
 OKUL.forEach((o, i) => {
   okKap.insertAdjacentHTML('beforeend', `
   <section class="kat sahne okul-s" id="okul-${i}">
-    <div class="yok">${o.kisa}</div>
+    <div class="yok" style="font-size:${o.kisa.length > 4 ? 220 : 300}px;background:radial-gradient(circle at 30% 30%, #2b4ea8, transparent 60%), radial-gradient(circle at 80% 70%, #6b2fb3, transparent 55%);color:rgba(255,200,61,.22)">${o.kisa}</div>
     ${o.portre ? `<img class="tam bg" src="${o.foto}" style="filter:blur(40px) brightness(.6);transform:scale(1.2)">` : ''}
     <img class="tam" data-src="${o.foto}" style="${o.portre ? 'top:250px;height:1080px;object-fit:contain' : ''}">
     <div class="kat karart"></div>
