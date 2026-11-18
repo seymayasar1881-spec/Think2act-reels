@@ -103,7 +103,7 @@ scene('s3', `<img id="s3bg" class="bgimg" src="${img('Trabzon3')}" style="z-inde
 /* ---- s4 Karadeniz ---- */
 const KR = ['Düzce','Kastamonu','Trabzon','Gümüşhane','Rize'];
 const ER = ['İzmir · Ödemiş','Manisa','Uşak','Konya'];
-const armBlock = (id, color, label, list) => `<div id="${id}b" style="left:var(--m);bottom:400px;z-index:46">
+const armBlock = (id, color, label, list, z) => `<div id="${id}b" style="left:var(--m);bottom:400px;z-index:${z}">
    <span class="kicker" style="${color}">${TR(label)}</span>
    <div id="${id}n" class="big" style="font-size:250px;margin-top:12px">0</div><div class="cap" style="font-size:34px">${TR('öğrenci')}</div>
    <div class="pills" style="margin-top:22px">${list.map(n=>`<span class="pill ${id}pl">${n}</span>`).join('')}</div></div>`;
@@ -111,7 +111,7 @@ scene('s4', `<img id="s4bg2" class="bgimg" src="${img('Duzce15')}" style="z-inde
   <div class="shade" style="z-index:44"></div>
   <div id="s4p1" class="print" style="left:120px;top:250px;width:520px;height:420px;z-index:45"><div class="tape"></div><img src="${img('Rize7')}"></div>
   <div id="s4p2" class="print" style="left:470px;top:500px;width:480px;height:384px;z-index:45"><div class="tape"></div><img src="${img('Duzce17')}"></div>
-  ${armBlock('s4','background:var(--orange);color:#fff','karadeniz kolu',KR)}
+  ${armBlock('s4','background:var(--orange);color:#fff','karadeniz kolu',KR,46)}
   ${pill('Gümüşhane','cityTop',46,'s4c1')}
   <div id="s4tir" style="left:var(--m);top:200px;z-index:46"><span class="kicker" style="background:#fff">${TR('yeğitek bilim tırı')}</span><div style="font:800 40px/1.2 Inter;margin-top:16px;text-shadow:0 4px 16px rgba(0,0,0,.6)">Kastamonu · Düzce</div></div>`);
 video('v4', 's4_gumushane.mp4', B('s4',0), B('s4',5) + OV, 42);
@@ -121,7 +121,7 @@ scene('s5', `<img id="s5bg2" class="bgimg" src="${img('Usak5')}" style="z-index:
   <div class="shade" style="z-index:54"></div>
   <div id="s5p1" class="print" style="left:440px;top:250px;width:520px;height:416px;z-index:55"><div class="tape"></div><img src="${img('Izmir_Odemis1')}"></div>
   <div id="s5p2" class="print" style="left:110px;top:520px;width:480px;height:384px;z-index:55"><div class="tape"></div><img src="${img('Manisa1')}"></div>
-  ${armBlock('s5','','ege kolu',ER)}
+  ${armBlock('s5','','ege kolu',ER,56)}
   ${pill('Konya','cityTop',56,'s5c1')}${pill('Uşak','cityTop',56,'s5c2')}`);
 video('v5', 's5_konya.mp4', B('s5',0), B('s5',5) + OV, 52);
 
@@ -156,9 +156,9 @@ root.innerHTML = html.join('');
 /* ---------------- timeline ---------------- */
 window.__timelines = window.__timelines || {};
 const tl = gsap.timeline({ paused: true });
-const IN = { autoAlpha: 0, scale: 1.06 }, INto = { autoAlpha: 1, scale: 1, duration: 0.22, ease: 'power2.out' };
-const textIn = (sel, t, d = 0.35) => tl.fromTo(sel, { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: d, ease: 'power3.out', immediateRender: false }, t);
-const pop = (sel, t) => tl.fromTo(sel, { scale: 0.4, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: false }, t);
+const IN = { autoAlpha: 0, scale: 1.06 }, INto = { autoAlpha: 1, scale: 1, duration: 0.22, ease: 'power2.out', immediateRender: true };
+const textIn = (sel, t, d = 0.35) => tl.fromTo(sel, { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: d, ease: 'power3.out', immediateRender: true }, t);
+const pop = (sel, t) => tl.fromTo(sel, { scale: 0.4, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: true }, t);
 const push = (sel, t0, t1, a = 1, b = 1.07) => tl.fromTo(sel, { scale: a }, { scale: b, duration: t1 - t0, ease: 'none', immediateRender: false }, t0);
 const swap = (outSel, inSel, t) => { tl.set(outSel, { autoAlpha: 0 }, t); tl.fromTo(inSel, { autoAlpha: 0, x: 24 }, { autoAlpha: 1, x: 0, duration: 0.25, ease: 'power2.out', immediateRender: false }, t); };
 const count = (sel, to, t0, t1) => { const o = { v: 0 }; tl.to(o, { v: to, duration: t1 - t0, ease: 'power2.out', onUpdate: () => { document.querySelector(sel).textContent = nf(o.v); } }, t0); };
@@ -172,11 +172,11 @@ push('#s1bg', 0, B('s1', 4) + OV, 1, 1.07);
 textIn('#s1a', 0.15);
 gsap.set('#s1b', { autoAlpha: 0 }); pop('#s1b', B('s1', 4));
 gsap.set('#s1p2', { autoAlpha: 0 }); swap('#s1p1', '#s1p2', B('s1', 4));
-tl.fromTo('#v1', IN, { ...INto, immediateRender: false }, B('s1', 4));
+tl.fromTo('#v1', IN, INto, B('s1', 4));
 
 // s2 map
 tl.fromTo('#s2', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.22, ease: 'power2.out', immediateRender: false }, B('s2'));
-textIn('#s2t', B('s2', 1));
+textIn('#s2t', B('s2', 0.3));
 gsap.set('#s2k', { autoAlpha: 0 }); pop('#s2k', B('s2', 2));
 push('#s2map svg', B('s2'), B('s2', 12) + OV, 1, 1.05);
 gsap.set('.pin', { autoAlpha: 0, scale: 0.4 });
@@ -187,57 +187,57 @@ for (let i = 0; i < 4; i++) tl.to(`#pin${5 + i}`, { autoAlpha: 1, scale: 1, dura
 textIn('#s2leg', B('s2', 8));
 
 // s3 counter
-tl.fromTo('#s3bg', IN, { ...INto, immediateRender: false }, B('s3'));
+tl.fromTo('#s3bg', IN, INto, B('s3'));
 push('#s3bg', B('s3') + 0.22, B('s3', 8) + OV, 1, 1.05);
 textIn('#s3b', B('s3', 0.4));
 count('#n3', 4507, B('s3', 0.6), B('s3', 3.6));
 pop('#s3p', B('s3', 1));
 
 // s4 Karadeniz
-tl.fromTo('#v4', IN, { ...INto, immediateRender: false }, B('s4'));
+tl.fromTo('#v4', IN, INto, B('s4'));
 gsap.set(['#s4bg2', '#s4tir'], { autoAlpha: 0 });
-tl.fromTo('#s4p1', { y: -320, rotation: -14, autoAlpha: 0 }, { y: 0, rotation: -5, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: false }, B('s4', 1));
-tl.fromTo('#s4p2', { y: -320, rotation: 12, autoAlpha: 0 }, { y: 0, rotation: 4, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: false }, B('s4', 2));
+tl.fromTo('#s4p1', { y: -320, rotation: -14, autoAlpha: 0 }, { y: 0, rotation: -5, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s4', 1));
+tl.fromTo('#s4p2', { y: -320, rotation: 12, autoAlpha: 0 }, { y: 0, rotation: 4, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s4', 2));
 textIn('#s4b', B('s4', 0.5));
 count('#s4n', 2304, B('s4', 1), B('s4', 3.5));
-tl.fromTo('.s4pl', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger: 0.08, ease: 'power3.out', immediateRender: false }, B('s4', 2));
+tl.fromTo('.s4pl', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger: 0.08, ease: 'power3.out', immediateRender: true }, B('s4', 2));
 pop('#s4c1', B('s4', 0.5));
 tl.to(['#s4p1', '#s4p2'], { x: -1200, rotation: -20, duration: 0.4, ease: 'power2.in' }, B('s4', 5) - 0.3);
 tl.to('#s4c1', { autoAlpha: 0, duration: 0.15 }, B('s4', 5));
-tl.fromTo('#s4bg2', IN, { ...INto, immediateRender: false }, B('s4', 5));
+tl.fromTo('#s4bg2', IN, INto, B('s4', 5));
 push('#s4bg2', B('s4', 5) + 0.22, B('s4', 10) + OV, 1, 1.05);
 textIn('#s4tir', B('s4', 5.5));
 
 // s5 Ege
-tl.fromTo('#v5', IN, { ...INto, immediateRender: false }, B('s5'));
+tl.fromTo('#v5', IN, INto, B('s5'));
 gsap.set(['#s5bg2', '#s5c2'], { autoAlpha: 0 });
-tl.fromTo('#s5p1', { y: -320, rotation: 14, autoAlpha: 0 }, { y: 0, rotation: 5, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: false }, B('s5', 1));
-tl.fromTo('#s5p2', { y: -320, rotation: -12, autoAlpha: 0 }, { y: 0, rotation: -4, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: false }, B('s5', 2));
+tl.fromTo('#s5p1', { y: -320, rotation: 14, autoAlpha: 0 }, { y: 0, rotation: 5, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s5', 1));
+tl.fromTo('#s5p2', { y: -320, rotation: -12, autoAlpha: 0 }, { y: 0, rotation: -4, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s5', 2));
 textIn('#s5b', B('s5', 0.5));
 count('#s5n', 2203, B('s5', 1), B('s5', 3.5));
-tl.fromTo('.s5pl', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger: 0.08, ease: 'power3.out', immediateRender: false }, B('s5', 2));
+tl.fromTo('.s5pl', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger: 0.08, ease: 'power3.out', immediateRender: true }, B('s5', 2));
 pop('#s5c1', B('s5', 0.5));
 tl.to(['#s5p1', '#s5p2'], { x: 1200, rotation: 20, duration: 0.4, ease: 'power2.in' }, B('s5', 5) - 0.3);
-tl.fromTo('#s5bg2', IN, { ...INto, immediateRender: false }, B('s5', 5));
+tl.fromTo('#s5bg2', IN, INto, B('s5', 5));
 push('#s5bg2', B('s5', 5) + 0.22, B('s5', 10) + OV, 1, 1.05);
 swap('#s5c1', '#s5c2', B('s5', 5));
 
 // s6 robot futbolu
-tl.fromTo('#s6bg', IN, { ...INto, immediateRender: false }, B('s6'));
+tl.fromTo('#s6bg', IN, INto, B('s6'));
 push('#s6bg', B('s6') + 0.22, B('s6', 6) + OV, 1, 1.06);
-tl.fromTo('#s6a', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: 'power3.out', immediateRender: false }, B('s6', 1));
+tl.fromTo('#s6a', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: 'power3.out', immediateRender: true }, B('s6', 1));
 gsap.set('#s6b', { autoAlpha: 0 }); pop('#s6b', B('s6', 2));
 gsap.set('#s6c2', { autoAlpha: 0 }); pop('#s6c1', B('s6', 1)); swap('#s6c1', '#s6c2', B('s6', 6));
-tl.fromTo('#v6', IN, { ...INto, immediateRender: false }, B('s6', 6));
+tl.fromTo('#v6', IN, INto, B('s6', 6));
 
 // s7 peak
-tl.fromTo('#v7', IN, { ...INto, immediateRender: false }, B('s7'));
+tl.fromTo('#v7', IN, INto, B('s7'));
 gsap.set('#s7s', { autoAlpha: 0 });
-tl.fromTo('#s7s', { scale: 0.4, rotation: -2, autoAlpha: 0 }, { scale: 1, rotation: -6, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: false }, B('s7', 1));
+tl.fromTo('#s7s', { scale: 0.4, rotation: -2, autoAlpha: 0 }, { scale: 1, rotation: -6, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: true }, B('s7', 1));
 pop('#s7c', B('s7', 0.5));
 
 // s8 closing
-tl.fromTo('#s8bg', IN, { ...INto, immediateRender: false }, B('s8'));
+tl.fromTo('#s8bg', IN, INto, B('s8'));
 push('#s8bg', B('s8') + 0.22, T.duration, 1, 1.06);
 textIn('#s8a', B('s8', 1));
 gsap.set(['#s8b', '#s8l'], { autoAlpha: 0 });
