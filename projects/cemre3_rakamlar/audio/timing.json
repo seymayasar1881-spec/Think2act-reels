@@ -1,0 +1,289 @@
+{
+ "bpm": 120,
+ "beat": 0.5,
+ "fps": 30,
+ "duration": 40.0,
+ "drop": 4.0,
+ "musicFadeAt": 37.8,
+ "start": {
+  "s1": 0,
+  "s2": 8,
+  "s3": 20,
+  "s4": 28,
+  "s5": 38,
+  "s6": 48,
+  "s7": 60,
+  "s8": 68
+ },
+ "scenes": [
+  {
+   "id": "s1",
+   "beats": 8,
+   "t0": 0.0,
+   "t1": 4.0
+  },
+  {
+   "id": "s2",
+   "beats": 12,
+   "t0": 4.0,
+   "t1": 10.0
+  },
+  {
+   "id": "s3",
+   "beats": 8,
+   "t0": 10.0,
+   "t1": 14.0
+  },
+  {
+   "id": "s4",
+   "beats": 10,
+   "t0": 14.0,
+   "t1": 19.0
+  },
+  {
+   "id": "s5",
+   "beats": 10,
+   "t0": 19.0,
+   "t1": 24.0
+  },
+  {
+   "id": "s6",
+   "beats": 12,
+   "t0": 24.0,
+   "t1": 30.0
+  },
+  {
+   "id": "s7",
+   "beats": 8,
+   "t0": 30.0,
+   "t1": 34.0
+  },
+  {
+   "id": "s8",
+   "beats": 12,
+   "t0": 34.0,
+   "t1": 40.0
+  }
+ ],
+ "cues": [
+  [
+   0.15,
+   "slide",
+   0.24,
+   "EKİMDE enters"
+  ],
+  [
+   2.0,
+   "thud",
+   0.42,
+   "9 İL. sticker pops on the cut"
+  ],
+  [
+   3.94,
+   "swell",
+   0.3,
+   "cut to map (drop)"
+  ],
+  [
+   4.5,
+   "slide",
+   0.22,
+   "title in"
+  ],
+  [
+   5.5,
+   "click",
+   0.3,
+   "Karadeniz pin 1"
+  ],
+  [
+   5.75,
+   "click",
+   0.3,
+   "Karadeniz pin 2"
+  ],
+  [
+   6.0,
+   "click",
+   0.3,
+   "Karadeniz pin 3"
+  ],
+  [
+   6.25,
+   "click",
+   0.3,
+   "Karadeniz pin 4"
+  ],
+  [
+   6.5,
+   "click",
+   0.3,
+   "Karadeniz pin 5"
+  ],
+  [
+   7.0,
+   "click",
+   0.3,
+   "Ege pin 1"
+  ],
+  [
+   7.25,
+   "click",
+   0.3,
+   "Ege pin 2"
+  ],
+  [
+   7.5,
+   "click",
+   0.3,
+   "Ege pin 3"
+  ],
+  [
+   7.75,
+   "click",
+   0.3,
+   "Ege pin 4"
+  ],
+  [
+   9.94,
+   "swell",
+   0.24,
+   "cut to counter"
+  ],
+  [
+   "counter",
+   10.3,
+   11.8,
+   0.08,
+   "4.507 counts up"
+  ],
+  [
+   11.8,
+   "click",
+   0.4,
+   "counter lands"
+  ],
+  [
+   13.94,
+   "swell",
+   0.24,
+   "cut to Karadeniz"
+  ],
+  [
+   14.5,
+   "slide",
+   0.26,
+   "print 1 drops"
+  ],
+  [
+   15.0,
+   "slide",
+   0.26,
+   "print 2 drops"
+  ],
+  [
+   "counter",
+   14.5,
+   15.75,
+   0.07,
+   "2.304 counts up"
+  ],
+  [
+   15.75,
+   "click",
+   0.35,
+   "2.304 lands"
+  ],
+  [
+   16.5,
+   "swell",
+   0.22,
+   "Bilim Tırı background"
+  ],
+  [
+   18.94,
+   "swell",
+   0.24,
+   "cut to Ege"
+  ],
+  [
+   19.5,
+   "slide",
+   0.26,
+   "print 1 drops"
+  ],
+  [
+   20.0,
+   "slide",
+   0.26,
+   "print 2 drops"
+  ],
+  [
+   "counter",
+   19.5,
+   20.75,
+   0.07,
+   "2.203 counts up"
+  ],
+  [
+   20.75,
+   "click",
+   0.35,
+   "2.203 lands"
+  ],
+  [
+   23.94,
+   "swell",
+   0.26,
+   "cut to robot football"
+  ],
+  [
+   24.5,
+   "slide",
+   0.24,
+   "ROBOT FUTBOLU in"
+  ],
+  [
+   25.0,
+   "thud",
+   0.4,
+   "SAHADA! block"
+  ],
+  [
+   29.94,
+   "swell",
+   0.28,
+   "cut to celebration"
+  ],
+  [
+   30.5,
+   "thud",
+   0.55,
+   "EVET! stamp"
+  ],
+  [
+   33.94,
+   "swell",
+   0.26,
+   "cut to closing"
+  ],
+  [
+   34.5,
+   "slide",
+   0.22,
+   "closing line"
+  ],
+  [
+   35.5,
+   "thud",
+   0.4,
+   "SAHADA. sticker"
+  ],
+  [
+   36.5,
+   "click",
+   0.3,
+   "logo"
+  ]
+ ]
+}

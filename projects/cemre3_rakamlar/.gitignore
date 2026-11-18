@@ -1,0 +1,6 @@
+assets/img/
+assets/vid/
+assets/prep_report.json
+audio/*.wav
+out/
+.hyperframes/

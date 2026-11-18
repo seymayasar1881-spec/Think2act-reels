@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Rebuild the Cemre 3 stats reel end to end.
+#   ./make.sh <source-media-dir>      (dir with full/<key>.jpg and vid/<key>.<ext> from Drive)
+#   ./make.sh                         (reuse already prepared assets)
+set -euo pipefail
+cd "$(dirname "$0")"
+HERE=$(pwd)
+NODE_DIR="$HERE/../../reels/node"
+
+python3 tools/timing.py
+if [ "${1:-}" != "" ]; then python3 tools/prep.py "$1"; fi
+python3 tools/sound.py
+
+mkdir -p out
+( cd "$NODE_DIR" && HYPERFRAMES_SKIP_SKILLS=1 npx --no-install hyperframes lint "$HERE" )
+( cd "$NODE_DIR" && HYPERFRAMES_SKIP_SKILLS=1 npx --no-install hyperframes render "$HERE" \
+    --fps 30 --quality delivery --quiet -o "$HERE/out/video_silent.mp4" < /dev/null )
+
+LN="loudnorm=I=-14:TP=-1.0:LRA=11"
+# Main version: temporary music + effects
+ffmpeg -v error -y -i out/video_silent.mp4 -i audio/mix.wav -map 0:v -map 1:a -c:v copy \
+  -af "$LN" -c:a aac -b:a 192k -ar 48000 -shortest -movflags +faststart out/cemre3_rakamlar.mp4
+# _SESSIZ: effects only, for adding a song inside Instagram
+ffmpeg -v error -y -i out/video_silent.mp4 -i audio/sfx.wav -map 0:v -map 1:a -c:v copy \
+  -af "volume=-6dB" -c:a aac -b:a 192k -ar 48000 -shortest -movflags +faststart out/cemre3_rakamlar_SESSIZ.mp4
+python3 tools/review.py out/cemre3_rakamlar.mp4 out/review_sheet.jpg
+echo "done: out/cemre3_rakamlar.mp4, out/cemre3_rakamlar_SESSIZ.mp4, out/review_sheet.jpg"
