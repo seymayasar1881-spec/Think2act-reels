@@ -2,18 +2,19 @@
  "bpm": 120,
  "beat": 0.5,
  "fps": 30,
- "duration": 40.0,
+ "duration": 43.0,
  "drop": 4.0,
- "musicFadeAt": 37.8,
+ "musicFadeAt": 40.8,
  "start": {
   "s1": 0,
   "s2": 8,
   "s3": 20,
-  "s4": 28,
-  "s5": 38,
-  "s6": 48,
-  "s7": 60,
-  "s8": 68
+  "s4": 30,
+  "s5": 40,
+  "s6": 52,
+  "s7": 62,
+  "s8": 70,
+  "s9": 76
  },
  "scenes": [
   {
@@ -30,53 +31,94 @@
   },
   {
    "id": "s3",
-   "beats": 8,
+   "beats": 10,
    "t0": 10.0,
-   "t1": 14.0
+   "t1": 15.0
   },
   {
    "id": "s4",
    "beats": 10,
-   "t0": 14.0,
-   "t1": 19.0
+   "t0": 15.0,
+   "t1": 20.0
   },
   {
    "id": "s5",
-   "beats": 10,
-   "t0": 19.0,
-   "t1": 24.0
+   "beats": 12,
+   "t0": 20.0,
+   "t1": 26.0
   },
   {
    "id": "s6",
-   "beats": 12,
-   "t0": 24.0,
-   "t1": 30.0
+   "beats": 10,
+   "t0": 26.0,
+   "t1": 31.0
   },
   {
    "id": "s7",
    "beats": 8,
-   "t0": 30.0,
-   "t1": 34.0
+   "t0": 31.0,
+   "t1": 35.0
   },
   {
    "id": "s8",
-   "beats": 12,
-   "t0": 34.0,
-   "t1": 40.0
+   "beats": 6,
+   "t0": 35.0,
+   "t1": 38.0
+  },
+  {
+   "id": "s9",
+   "beats": 10,
+   "t0": 38.0,
+   "t1": 43.0
   }
+ ],
+ "cal": [
+  1.0,
+  1.0,
+  1.5,
+  1.5,
+  2.0,
+  2.5,
+  3.0,
+  3.5,
+  4.0
+ ],
+ "peaks": [
+  4.0,
+  35.0,
+  38.0
  ],
  "cues": [
   [
-   0.15,
-   "slide",
-   0.24,
-   "EKİMDE enters"
+   "counter",
+   0.2,
+   1.5,
+   0.08,
+   "4.507 counts up"
+  ],
+  [
+   1.5,
+   "click",
+   0.4,
+   "4.507 lands"
   ],
   [
    2.0,
    "thud",
-   0.42,
-   "9 İL. sticker pops on the cut"
+   0.3,
+   "stat tile 1"
+  ],
+  [
+   2.5,
+   "thud",
+   0.3,
+   "stat tile 2"
+  ],
+  [
+   3.0,
+   "thud",
+   0.3,
+   "stat tile 3"
   ],
   [
    3.94,
@@ -85,7 +127,7 @@
    "cut to map (drop)"
   ],
   [
-   4.5,
+   4.15,
    "slide",
    0.22,
    "title in"
@@ -148,139 +190,251 @@
    9.94,
    "swell",
    0.24,
-   "cut to counter"
+   "cut to calendar"
+  ],
+  [
+   10.2,
+   "slide",
+   0.22,
+   "calendar grid"
+  ],
+  [
+   10.5,
+   "click",
+   0.26,
+   "calendar box 1"
+  ],
+  [
+   10.5,
+   "click",
+   0.26,
+   "calendar box 2"
+  ],
+  [
+   10.75,
+   "click",
+   0.26,
+   "calendar box 3"
+  ],
+  [
+   10.75,
+   "click",
+   0.26,
+   "calendar box 4"
+  ],
+  [
+   11.0,
+   "click",
+   0.26,
+   "calendar box 5"
+  ],
+  [
+   11.25,
+   "click",
+   0.26,
+   "calendar box 6"
+  ],
+  [
+   11.5,
+   "click",
+   0.26,
+   "calendar box 7"
+  ],
+  [
+   11.75,
+   "click",
+   0.26,
+   "calendar box 8"
+  ],
+  [
+   12.0,
+   "click",
+   0.26,
+   "calendar box 9"
+  ],
+  [
+   14.94,
+   "swell",
+   0.24,
+   "cut to total"
   ],
   [
    "counter",
-   10.3,
-   11.8,
-   0.08,
+   15.25,
+   16.5,
+   0.07,
    "4.507 counts up"
   ],
   [
-   11.8,
-   "click",
-   0.4,
-   "counter lands"
-  ],
-  [
-   13.94,
-   "swell",
-   0.24,
-   "cut to Karadeniz"
-  ],
-  [
-   14.5,
-   "slide",
-   0.26,
-   "print 1 drops"
-  ],
-  [
-   15.0,
-   "slide",
-   0.26,
-   "print 2 drops"
-  ],
-  [
-   "counter",
-   14.5,
-   15.75,
-   0.07,
-   "2.304 counts up"
-  ],
-  [
-   15.75,
-   "click",
-   0.35,
-   "2.304 lands"
-  ],
-  [
    16.5,
-   "swell",
-   0.22,
-   "Bilim Tırı background"
+   "click",
+   0.36,
+   "4.507 lands"
   ],
   [
-   18.94,
+   16.75,
+   "slide",
+   0.28,
+   "Karadeniz block grows"
+  ],
+  [
+   17.25,
+   "slide",
+   0.28,
+   "Ege block grows"
+  ],
+  [
+   19.94,
    "swell",
    0.24,
-   "cut to Ege"
-  ],
-  [
-   19.5,
-   "slide",
-   0.26,
-   "print 1 drops"
-  ],
-  [
-   20.0,
-   "slide",
-   0.26,
-   "print 2 drops"
-  ],
-  [
-   "counter",
-   19.5,
-   20.75,
-   0.07,
-   "2.203 counts up"
+   "cut to ranking"
   ],
   [
    20.75,
+   "tick",
+   0.2,
+   "bar 1"
+  ],
+  [
+   20.875,
+   "tick",
+   0.2,
+   "bar 2"
+  ],
+  [
+   21.0,
+   "tick",
+   0.2,
+   "bar 3"
+  ],
+  [
+   21.125,
+   "tick",
+   0.2,
+   "bar 4"
+  ],
+  [
+   21.25,
+   "tick",
+   0.2,
+   "bar 5"
+  ],
+  [
+   21.375,
+   "tick",
+   0.2,
+   "bar 6"
+  ],
+  [
+   21.5,
+   "tick",
+   0.2,
+   "bar 7"
+  ],
+  [
+   21.625,
+   "tick",
+   0.2,
+   "bar 8"
+  ],
+  [
+   21.75,
+   "tick",
+   0.2,
+   "bar 9"
+  ],
+  [
+   22.0,
    "click",
-   0.35,
-   "2.203 lands"
+   0.3,
+   "bars complete"
   ],
   [
-   23.94,
+   25.94,
+   "swell",
+   0.24,
+   "cut to schools"
+  ],
+  [
+   26.5,
+   "slide",
+   0.24,
+   "school row 1"
+  ],
+  [
+   26.8,
+   "slide",
+   0.24,
+   "school row 2"
+  ],
+  [
+   27.1,
+   "slide",
+   0.24,
+   "school row 3"
+  ],
+  [
+   27.4,
+   "slide",
+   0.24,
+   "school row 4"
+  ],
+  [
+   27.7,
+   "slide",
+   0.24,
+   "school row 5"
+  ],
+  [
+   30.94,
    "swell",
    0.26,
    "cut to robot football"
   ],
   [
-   24.5,
+   31.5,
    "slide",
    0.24,
    "ROBOT FUTBOLU in"
   ],
   [
-   25.0,
+   32.0,
    "thud",
    0.4,
    "SAHADA! block"
   ],
   [
-   29.94,
+   34.94,
    "swell",
    0.28,
    "cut to celebration"
   ],
   [
-   30.5,
+   35.5,
    "thud",
    0.55,
    "EVET! stamp"
   ],
   [
-   33.94,
+   37.94,
    "swell",
    0.26,
    "cut to closing"
   ],
   [
-   34.5,
+   38.5,
    "slide",
    0.22,
    "closing line"
   ],
   [
-   35.5,
+   39.5,
    "thud",
    0.4,
    "SAHADA. sticker"
   ],
   [
-   36.5,
+   40.5,
    "click",
    0.3,
    "logo"

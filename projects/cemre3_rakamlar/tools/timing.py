@@ -1,4 +1,4 @@
-"""Single source of time for the Cemre 3 stats reel.
+"""Single source of time for the Cemre 3 statistics reel (v2).
 
 Every scene length is a whole number of beats on a 120 BPM grid. Scene code
 (assets/timing.js) and the sound mix (audio/timing.json) are both generated
@@ -15,16 +15,16 @@ FPS = 30
 
 # (id, beats) in order. Hook ends exactly on the drop (beat 8).
 SCENES = [
-    ("s1", 8),    # hook: "Ekimde 9 il."
+    ("s1", 8),    # hook: 4.507 + 9 il / 18 okul / 2 kol
     ("s2", 12),   # map: 9 il, 2 kol
-    ("s3", 8),    # 4.507 counter
-    ("s4", 10),   # Karadeniz 2.304
-    ("s5", 10),   # Ege 2.203
-    ("s6", 12),   # robot futbolu sahada
-    ("s7", 8),    # peak: Evet! stamp
-    ("s8", 12),   # closing
+    ("s3", 10),   # calendar, 5-16 Ekim
+    ("s4", 10),   # total + Karadeniz / Ege split bar
+    ("s5", 12),   # 9 provinces, ranked bars
+    ("s6", 10),   # top 5 schools
+    ("s7", 8),    # robot futbolu sahada
+    ("s8", 6),    # peak: Evet! stamp
+    ("s9", 10),   # closing
 ]
-
 START = {}
 t = 0
 for sid, beats in SCENES:
@@ -42,38 +42,43 @@ def B(scene: str, beat: float = 0.0) -> float:
 
 
 # Sound cues: every effect is tied to something on screen.
+CAL = [  # calendar boxes in date order: (scene beat, arm)
+    1.0, 1.0, 1.5, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+BARS = 9
+
 CUES = [
-    # (time, kind, gain, note)
-    (B("s1", 0.3), "slide", 0.24, "EKİMDE enters"),
-    (B("s1", 4), "thud", 0.42, "9 İL. sticker pops on the cut"),
+    # (time, kind, gain, note) or ("counter", t0, t1, gain, note)
+    ("counter", B("s1", 0.4), B("s1", 3.0), 0.08, "4.507 counts up"),
+    (B("s1", 3.0), "click", 0.40, "4.507 lands"),
+    *[(B("s1", 4 + i), "thud", 0.30, f"stat tile {i+1}") for i in range(3)],
     (B("s2", 0) - 0.06, "swell", 0.30, "cut to map (drop)"),
-    (B("s2", 1), "slide", 0.22, "title in"),
+    (B("s2", 0.3), "slide", 0.22, "title in"),
     *[(B("s2", 3 + i * 0.5), "click", 0.30, f"Karadeniz pin {i+1}") for i in range(5)],
     *[(B("s2", 6 + i * 0.5), "click", 0.30, f"Ege pin {i+1}") for i in range(4)],
-    (B("s3", 0) - 0.06, "swell", 0.24, "cut to counter"),
-    ("counter", B("s3", 0.6), B("s3", 3.6), 0.08, "4.507 counts up"),
-    (B("s3", 3.6), "click", 0.40, "counter lands"),
-    (B("s4", 0) - 0.06, "swell", 0.24, "cut to Karadeniz"),
-    (B("s4", 1), "slide", 0.26, "print 1 drops"),
-    (B("s4", 2), "slide", 0.26, "print 2 drops"),
-    ("counter", B("s4", 1), B("s4", 3.5), 0.07, "2.304 counts up"),
-    (B("s4", 3.5), "click", 0.35, "2.304 lands"),
-    (B("s4", 5), "swell", 0.22, "Bilim Tırı background"),
-    (B("s5", 0) - 0.06, "swell", 0.24, "cut to Ege"),
-    (B("s5", 1), "slide", 0.26, "print 1 drops"),
-    (B("s5", 2), "slide", 0.26, "print 2 drops"),
-    ("counter", B("s5", 1), B("s5", 3.5), 0.07, "2.203 counts up"),
-    (B("s5", 3.5), "click", 0.35, "2.203 lands"),
-    (B("s6", 0) - 0.06, "swell", 0.26, "cut to robot football"),
-    (B("s6", 1), "slide", 0.24, "ROBOT FUTBOLU in"),
-    (B("s6", 2), "thud", 0.40, "SAHADA! block"),
-    (B("s7", 0) - 0.06, "swell", 0.28, "cut to celebration"),
-    (B("s7", 1), "thud", 0.55, "EVET! stamp"),
-    (B("s8", 0) - 0.06, "swell", 0.26, "cut to closing"),
-    (B("s8", 1), "slide", 0.22, "closing line"),
-    (B("s8", 3), "thud", 0.40, "SAHADA. sticker"),
-    (B("s8", 5), "click", 0.30, "logo"),
+    (B("s3", 0) - 0.06, "swell", 0.24, "cut to calendar"),
+    (B("s3", 0.4), "slide", 0.22, "calendar grid"),
+    *[(B("s3", b), "click", 0.26, f"calendar box {i+1}") for i, b in enumerate(CAL)],
+    (B("s4", 0) - 0.06, "swell", 0.24, "cut to total"),
+    ("counter", B("s4", 0.5), B("s4", 3.0), 0.07, "4.507 counts up"),
+    (B("s4", 3.0), "click", 0.36, "4.507 lands"),
+    (B("s4", 3.5), "slide", 0.28, "Karadeniz block grows"),
+    (B("s4", 4.5), "slide", 0.28, "Ege block grows"),
+    (B("s5", 0) - 0.06, "swell", 0.24, "cut to ranking"),
+    *[(B("s5", 1.5 + i * 0.25), "tick", 0.20, f"bar {i+1}") for i in range(BARS)],
+    (B("s5", 4.0), "click", 0.30, "bars complete"),
+    (B("s6", 0) - 0.06, "swell", 0.24, "cut to schools"),
+    *[(B("s6", 1 + i * 0.6), "slide", 0.24, f"school row {i+1}") for i in range(5)],
+    (B("s7", 0) - 0.06, "swell", 0.26, "cut to robot football"),
+    (B("s7", 1), "slide", 0.24, "ROBOT FUTBOLU in"),
+    (B("s7", 2), "thud", 0.40, "SAHADA! block"),
+    (B("s8", 0) - 0.06, "swell", 0.28, "cut to celebration"),
+    (B("s8", 1), "thud", 0.55, "EVET! stamp"),
+    (B("s9", 0) - 0.06, "swell", 0.26, "cut to closing"),
+    (B("s9", 1), "slide", 0.22, "closing line"),
+    (B("s9", 3), "thud", 0.40, "SAHADA. sticker"),
+    (B("s9", 5), "click", 0.30, "logo"),
 ]
+PEAKS = [DROP, B("s8"), B("s9")]   # crash cymbals in the music bed
 
 
 def main() -> None:
@@ -82,6 +87,7 @@ def main() -> None:
         "bpm": BPM, "beat": BEAT, "fps": FPS, "duration": DURATION, "drop": DROP,
         "musicFadeAt": MUSIC_FADE_AT, "start": {k: v for k, v in START.items()},
         "scenes": [{"id": s, "beats": b, "t0": B(s), "t1": B(s, b)} for s, b in SCENES],
+        "cal": CAL, "peaks": PEAKS,
     }
     (root / "assets" / "timing.js").write_text(
         "// generated by tools/timing.py - do not edit\n"

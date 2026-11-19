@@ -180,7 +180,7 @@ def build_music(T):
     rn = int(2 * SR)
     ri = int((drop - 2) * SR)
     music[ri:ri + rn] += lp(rng.standard_normal(rn), 900) * np.linspace(0, 1, rn) ** 2 * .12
-    for tc in (drop, T["start"]["s7"] * beat, T["start"]["s8"] * beat):
+    for tc in T["peaks"]:
         k = int(1.6 * SR)
         j = int(tc * SR)
         music[j:j + k] += hp(rng.standard_normal(k), 5000) * np.exp(-np.arange(k) / SR * 3) * .18

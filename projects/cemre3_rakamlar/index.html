@@ -45,28 +45,54 @@ video.clip{width:1080px;height:1920px;object-fit:cover}
 #vig{position:absolute;inset:0;background:radial-gradient(ellipse 85% 70% at 50% 45%,transparent 55%,rgba(0,0,0,.45) 100%);z-index:290;pointer-events:none}
 #grain{position:absolute;left:-150px;top:-150px;width:1380px;height:2220px;opacity:.26;mix-blend-mode:overlay;z-index:295;pointer-events:none;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.4 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+/* v2: data scenes */
+:root{ --kd:#3D8FD6; --eg:#EC6612; --ink2:rgba(255,255,255,.78); --ink3:rgba(255,255,255,.55); --grid:rgba(255,255,255,.12); }
+.night{inset:0;background:radial-gradient(ellipse 90% 60% at 50% 40%,#15284A 0%,#0B1530 70%)}
+.band{left:-30px;top:-40px;width:1140px;height:640px;object-fit:cover}
+.bandShade{left:0;right:0;top:0;height:620px;background:linear-gradient(180deg,rgba(11,21,48,.35) 0%,rgba(11,21,48,.55) 55%,#0d1a36 100%)}
+.h{font:400 112px/.98 Anton}
+.h em{font-style:normal;color:var(--amber)}
+.title{left:var(--m);right:var(--m);top:240px}
+.num{font-variant-numeric:tabular-nums}
+.leg{display:flex;gap:28px;font:800 30px/1 Inter}
+.leg span{display:flex;align-items:center;gap:12px}
+.leg i{width:26px;height:26px;border-radius:6px;display:block}
+.tile{border:2px solid rgba(248,172,29,.5);border-radius:12px;padding:22px 20px;background:rgba(11,21,48,.6)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-start="0" data-duration="40" data-width="1080" data-height="1920"></div>
+<div id="root" data-composition-id="main" data-start="0" data-duration="43" data-width="1080" data-height="1920"></div>
 <script>
-/* Build the DOM from timing.js so every element's time comes from tools/timing.py */
 const TR = s => s.replace(/i/g,'İ').replace(/ı/g,'I').toUpperCase();
 const nf = n => Math.round(n).toLocaleString('tr-TR');
-const OV = 0.25;                         // each scene outlives its cut by 0.25 s
+const OV = 0.25;
 const dur = s => T.scenes.find(x => x.id === s).beats * T.beat;
 const root = document.getElementById('root');
 const html = [];
 const scene = (id, inner) => html.push(`<div id="${id}" class="clip scene" data-start="${B(id)}" data-duration="${(dur(id) + OV).toFixed(3)}">${inner}</div>`);
 const video = (id, src, t0, t1, z) => html.push(`<video id="${id}" class="clip" src="assets/vid/${src}" muted playsinline preload="auto" data-start="${t0}" data-duration="${(t1 - t0).toFixed(3)}" style="z-index:${z}"></video>`);
-const img = (n) => `assets/img/${n}.jpg`;
+const img = n => `assets/img/${n}.jpg`;
 const pill = (txt, cls, z, id='') => `<div ${id?`id="${id}"`:''} class="pill ${cls}" style="z-index:${z}"><span class="dot"></span>${txt}</div>`;
+const KD = 'var(--kd)', EG = 'var(--eg)';
+const legend = (z, extra='') => `<div class="leg" style="${extra}"><span><i style="background:${KD}"></i>Karadeniz</span><span><i style="background:${EG}"></i>Ege</span></div>`;
 
-/* ---- s1 hook ---- */
+/* ---- data (source: T2A, 2026-11-19) ---- */
+const IL = [['Konya','eg',1269],['Düzce','kd',790],['Gümüşhane','kd',554],['Trabzon','kd',506],['Manisa','eg',421],['Kastamonu','kd',368],['Uşak','eg',338],['İzmir','eg',175],['Rize','kd',86]];
+const CAL = [ // arm, province, first day, last day, students, Bilim Tırı - in date order (matches timing.py CAL)
+  ['kd','Düzce',5,6,790,1],['eg','İzmir',5,6,175,0],['kd','Kastamonu',7,7,368,1],['eg','Manisa',7,7,421,0],['eg','Uşak',8,8,338,0],
+  ['eg','Konya',10,11,1269,0],['kd','Trabzon',12,13,506,0],['kd','Gümüşhane',14,15,554,0],['kd','Rize',16,16,86,0]];
+const SCH = [['Akşehir Atatürk Ortaokulu','Konya',1071,'eg'],['Manisa TOKİ İlköğretim Okulu','Manisa',421,'eg'],['Kaynaşlı AKV Ortaokulu','Düzce',369,'kd'],['Çarşıbaşı Ortaokulu','Trabzon',344,'kd'],['Uşak Nori Demir Ortaokulu','Uşak',338,'eg']];
+
+/* ---- s1 hook: 4.507 ---- */
 scene('s1', `<img id="s1bg" class="bgimg" src="${img('Kastamonu4')}" style="z-index:11">
-  <div class="shade top" style="z-index:14"></div>
-  <div style="left:var(--m);right:var(--m);top:420px;text-align:center;z-index:16"><span id="s1a" class="hl">${TR('Ekimde')}</span><span id="s1b" class="sticker" style="margin-top:18px">${TR('9 il.')}</span></div>
-  ${pill('Kastamonu','city',16,'s1p1')}${pill('İzmir · Ödemiş','city',16,'s1p2')}`);
+  <div style="inset:0;background:linear-gradient(180deg,rgba(11,21,48,.3),rgba(11,21,48,.85) 60%,#0B1530);z-index:14"></div>
+  <div style="left:var(--m);right:var(--m);top:560px;z-index:16"><span id="s1k" class="kicker">${TR('cemre · ekim 2026')}</span>
+   <div id="s1n" class="num" style="font:400 300px/.9 Anton;color:var(--amber);margin-top:20px;text-shadow:0 6px 26px rgba(0,0,0,.45)">0</div>
+   <div id="s1c" style="font:800 44px/1.1 Inter;letter-spacing:.05em">${TR('öğrenci, tek ayda.')}</div>
+   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:60px">
+    ${[['9','il'],['18','okul'],['2','kol']].map(([a,b],i)=>`<div id="s1t${i}" class="tile"><div class="num" style="font:400 96px/1 Anton">${a}</div><div style="font:800 26px/1.1 Inter;letter-spacing:.06em;color:var(--ink2);margin-top:8px">${TR(b)}</div></div>`).join('')}
+   </div></div>
+  ${pill('Kastamonu','cityTop',16,'s1p1')}${pill('İzmir · Ödemiş','cityTop',16,'s1p2')}`);
 video('v1', 's1_izmir.mp4', B('s1',4), B('s1',8) + OV, 12);
 
 /* ---- s2 map ---- */
@@ -84,71 +110,86 @@ scene('s2', `<div style="inset:0;background:var(--brandbg);z-index:21"></div>
    <svg viewBox="10 -40 830 540" width="1080" height="702" style="display:block">
     <path d="${M.others}" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
     <path d="${M.turkey}" fill="rgba(255,255,255,.92)" stroke="#fff" stroke-width="1.2"/>
-    <path id="rK" d="${route(K)}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" fill="none" stroke="#0B1530" stroke-width="5" stroke-linecap="round"/>
-    <path id="rE" d="${route(E)}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" fill="none" stroke="#F8AC1D" stroke-width="5" stroke-linecap="round"/>
-    ${K.map((n,i)=>pin(n,'#0B1530',i)).join('')}${E.map((n,i)=>pin(n,'#F8AC1D',5+i)).join('')}
+    <path id="rK" d="${route(K)}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" fill="none" stroke="#3D8FD6" stroke-width="5" stroke-linecap="round"/>
+    <path id="rE" d="${route(E)}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" fill="none" stroke="#EC6612" stroke-width="5" stroke-linecap="round"/>
+    ${K.map((n,i)=>pin(n,'#3D8FD6',i)).join('')}${E.map((n,i)=>pin(n,'#EC6612',5+i)).join('')}
    </svg></div>
-  <div id="s2leg" style="left:var(--m);top:1360px;display:flex;flex-direction:column;gap:14px;z-index:26">
-   <div style="font:800 34px/1 Inter;display:flex;align-items:center;gap:14px"><i style="width:44px;height:6px;background:#0B1530;display:block;border-radius:3px"></i>Karadeniz</div>
-   <div style="font:800 34px/1 Inter;display:flex;align-items:center;gap:14px"><i style="width:44px;height:6px;background:var(--amber);display:block;border-radius:3px"></i>Ege</div></div>`);
+  <div id="s2leg" style="left:var(--m);top:1360px;z-index:26">${legend()}</div>`);
 
-/* ---- s3 counter ---- */
-scene('s3', `<img id="s3bg" class="bgimg" src="${img('Trabzon3')}" style="z-index:31">
-  <div class="shade" style="z-index:34"></div>
-  <div id="s3b" style="left:var(--m);bottom:420px;z-index:36"><span class="kicker">${TR('rakamlarla cemre')}</span>
-   <div id="n3" class="big" style="margin-top:16px">0</div><div class="cap">${TR('öğrenciye ulaştık')}</div>
-   <div class="src" style="margin-top:18px">18 okul · 9 il · Ekim 2026</div></div>
-  ${pill('Trabzon','cityTop',36,'s3p')}`);
+/* ---- s3 calendar ---- */
+{
+ const days=[5,6,7,8,9,10,11,12,13,14,15,16], top=650, rowH=80, x0=230, laneW=360, gap=24;
+ let g='';
+ days.forEach((d,i)=>{ g+=`<div class="calrow" style="left:var(--m);top:${top+i*rowH}px;width:140px;height:${rowH}px;display:flex;align-items:center;font:800 30px/1 Inter;color:var(--ink2);z-index:36">${d} Eki</div>
+   <div class="calrow" style="left:${x0}px;right:var(--m);top:${top+i*rowH+rowH-1}px;height:1px;background:var(--grid);z-index:35"></div>`; });
+ CAL.forEach(([a,n,d0,d1,v,tir],i)=>{ const x=a==='kd'?x0:x0+laneW+gap, y=top+(d0-5)*rowH+5, h=(d1-d0+1)*rowH-10;
+   g+=`<div id="cal${i}" style="left:${x}px;top:${y}px;width:${laneW}px;height:${h}px;border-radius:4px;background:${a==='kd'?KD:EG};display:flex;align-items:center;justify-content:space-between;padding:0 22px;font:800 30px/1 Inter;z-index:37;transform-origin:left center"><span>${n}${tir?' <span style="font-size:24px">★</span>':''}</span><span class="num" style="font:400 42px/1 Anton">${nf(v)}</span></div>`; });
+ scene('s3', `<div class="night" style="z-index:31"></div><img id="s3band" class="band" src="${img('Rize7')}" style="z-index:32"><div class="bandShade" style="z-index:33"></div>
+  <div id="s3t" class="title" style="top:230px;z-index:36"><span class="kicker">${TR('ekim takvimi')}</span><div class="h" style="margin-top:16px">${TR('5–16 ekim')}<br><em>${TR('9 il.')}</em></div></div>
+  <div class="calrow" style="left:${x0}px;top:${top-56}px;font:800 26px/1 Inter;letter-spacing:.06em;color:var(--ink2);z-index:36">${TR('karadeniz')}</div>
+  <div class="calrow" style="left:${x0+laneW+gap}px;top:${top-56}px;font:800 26px/1 Inter;letter-spacing:.06em;color:var(--ink2);z-index:36">${TR('ege')}</div>
+  ${g}<div id="s3f" style="left:var(--m);right:var(--m);top:${top+12*rowH+22}px;font:700 24px/1.4 Inter;color:var(--ink3);z-index:36">Sayılar öğrenci · ★ YEĞİTEK Bilim Tırı da oradaydı</div>
+  ${pill('Rize','cityTop',36,'s3p')}`);
+}
 
-/* ---- s4 Karadeniz ---- */
-const KR = ['Düzce','Kastamonu','Trabzon','Gümüşhane','Rize'];
-const ER = ['İzmir · Ödemiş','Manisa','Uşak','Konya'];
-const armBlock = (id, color, label, list, z) => `<div id="${id}b" style="left:var(--m);bottom:400px;z-index:${z}">
-   <span class="kicker" style="${color}">${TR(label)}</span>
-   <div id="${id}n" class="big" style="font-size:250px;margin-top:12px">0</div><div class="cap" style="font-size:34px">${TR('öğrenci')}</div>
-   <div class="pills" style="margin-top:22px">${list.map(n=>`<span class="pill ${id}pl">${n}</span>`).join('')}</div></div>`;
-scene('s4', `<img id="s4bg2" class="bgimg" src="${img('Duzce15')}" style="z-index:43">
-  <div class="shade" style="z-index:44"></div>
-  <div id="s4p1" class="print" style="left:120px;top:250px;width:520px;height:420px;z-index:45"><div class="tape"></div><img src="${img('Rize7')}"></div>
-  <div id="s4p2" class="print" style="left:470px;top:500px;width:480px;height:384px;z-index:45"><div class="tape"></div><img src="${img('Duzce17')}"></div>
-  ${armBlock('s4','background:var(--orange);color:#fff','karadeniz kolu',KR,46)}
-  ${pill('Gümüşhane','cityTop',46,'s4c1')}
-  <div id="s4tir" style="left:var(--m);top:200px;z-index:46"><span class="kicker" style="background:#fff">${TR('yeğitek bilim tırı')}</span><div style="font:800 40px/1.2 Inter;margin-top:16px;text-shadow:0 4px 16px rgba(0,0,0,.6)">Kastamonu · Düzce</div></div>`);
-video('v4', 's4_gumushane.mp4', B('s4',0), B('s4',5) + OV, 42);
+/* ---- s4 total + split ---- */
+scene('s4', `<div class="night" style="z-index:41"></div><img id="s4band" class="band" src="${img('Trabzon3')}" style="z-index:42"><div class="bandShade" style="z-index:43"></div>
+  <div id="s4t" class="title" style="z-index:46"><span class="kicker">${TR('toplam')}</span><div id="s4n" class="num" style="font:400 250px/.9 Anton;color:var(--amber);margin-top:16px">0</div><div style="font:800 40px/1 Inter;letter-spacing:.06em">${TR('öğrenci')}</div></div>
+  <div style="left:var(--m);right:var(--m);top:880px;height:540px;display:flex;gap:6px;z-index:46">
+   <div id="s4kd" style="flex:2304;background:${KD};border-radius:4px 0 0 4px;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;transform-origin:left center"><div class="num" style="font:400 120px/1 Anton">2.304</div><div style="font:800 30px/1.2 Inter">Karadeniz · %51</div></div>
+   <div id="s4eg" style="flex:2203;background:${EG};border-radius:0 4px 4px 0;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;transform-origin:left center"><div class="num" style="font:400 120px/1 Anton">2.203</div><div style="font:800 30px/1.2 Inter">Ege · %49</div></div></div>
+  <div id="s4f" style="left:var(--m);top:1450px;font:700 24px/1.3 Inter;color:var(--ink3);z-index:46">5 il Karadeniz kolunda, 4 il Ege kolunda</div>
+  ${pill('Trabzon','cityTop',46,'s4p')}`);
 
-/* ---- s5 Ege ---- */
-scene('s5', `<img id="s5bg2" class="bgimg" src="${img('Usak5')}" style="z-index:53">
-  <div class="shade" style="z-index:54"></div>
-  <div id="s5p1" class="print" style="left:440px;top:250px;width:520px;height:416px;z-index:55"><div class="tape"></div><img src="${img('Izmir_Odemis1')}"></div>
-  <div id="s5p2" class="print" style="left:110px;top:520px;width:480px;height:384px;z-index:55"><div class="tape"></div><img src="${img('Manisa1')}"></div>
-  ${armBlock('s5','','ege kolu',ER,56)}
-  ${pill('Konya','cityTop',56,'s5c1')}${pill('Uşak','cityTop',56,'s5c2')}`);
-video('v5', 's5_konya.mp4', B('s5',0), B('s5',5) + OV, 52);
+/* ---- s5 ranking ---- */
+{
+ const top=700, rowH=96, x0=330, W=560, max=1269; let g='';
+ IL.forEach(([n,a,v],i)=>{ const y=top+i*rowH, w=Math.max(8,v/max*W);
+  g+=`<div class="bl" style="left:var(--m);top:${y}px;width:250px;height:64px;display:flex;align-items:center;justify-content:flex-end;font:800 32px/1 Inter;z-index:56">${n}</div>
+   <div id="bar${i}" style="left:${x0}px;top:${y+8}px;width:${w}px;height:48px;background:${a==='kd'?KD:EG};border-radius:0 4px 4px 0;transform-origin:left center;z-index:56"></div>
+   <div id="bv${i}" class="num" style="left:${x0+w+16}px;top:${y}px;height:64px;display:flex;align-items:center;font:400 44px/1 Anton;z-index:56">${nf(v)}</div>`; });
+ g+=`<div class="bl" style="left:${x0-2}px;top:${top-10}px;width:2px;height:${IL.length*rowH}px;background:rgba(255,255,255,.4);z-index:56"></div>`;
+ scene('s5', `<div class="night" style="z-index:51"></div><img id="s5band" class="band" src="${img('Aksehir3')}" style="z-index:52"><div class="bandShade" style="z-index:53"></div>
+  <div id="s5t" class="title" style="top:230px;z-index:56"><span class="kicker">${TR('il il öğrenci')}</span><div class="h" style="margin-top:16px">${TR('9 il,')}<br><em>4.507</em> ${TR('öğrenci')}</div></div>
+  ${g}<div id="s5l" style="left:var(--m);top:1600px;z-index:56">${legend()}</div>
+  ${pill('Konya','cityTop',56,'s5p')}`);
+}
 
-/* ---- s6 robot futbolu ---- */
-scene('s6', `<img id="s6bg" class="bgimg" src="${img('Usak16')}" style="z-index:61">
-  <div class="shade" style="z-index:64"></div>
-  <div id="s6t" style="left:var(--m);bottom:430px;z-index:66"><div id="s6a" style="font:400 130px/1 Anton;text-shadow:0 6px 26px rgba(0,0,0,.55)">${TR('robot futbolu')}</div>
-   <div style="margin-top:14px"><span id="s6b" style="display:inline-block;background:var(--brand);font:400 130px/1 Anton;padding:10px 28px 2px;border-radius:10px">${TR('sahada!')}</span></div></div>
-  ${pill('Uşak','cityTop',66,'s6c1')}${pill('İzmir · Ödemiş','cityTop',66,'s6c2')}`);
-video('v6', 's6_izmir.mp4', B('s6',6), B('s6',12) + OV, 62);
+/* ---- s6 schools ---- */
+scene('s6', `<div class="night" style="z-index:61"></div><img id="s6band" class="band" src="${img('Duzce17')}" style="z-index:62"><div class="bandShade" style="z-index:63"></div>
+  <div id="s6t" class="title" style="top:230px;z-index:66"><span class="kicker">${TR('en kalabalık 5 okul')}</span><div class="h" style="margin-top:16px"><em>18</em> ${TR('okul')}</div></div>
+  <div style="left:var(--m);right:var(--m);top:720px;display:flex;flex-direction:column;gap:18px;z-index:66">
+  ${SCH.map(([n,il,v,a],i)=>`<div id="sr${i}" style="display:grid;grid-template-columns:1fr auto;gap:10px 20px;align-items:end;background:rgba(11,21,48,.6);border:1.5px solid rgba(255,255,255,.14);border-radius:6px;padding:20px 24px">
+    <div><div style="font:800 32px/1.15 Inter">${n}</div><div style="font:700 24px/1.2 Inter;color:var(--ink3);margin-top:6px">${il}</div></div>
+    <div class="num" style="font:400 64px/1 Anton">${nf(v)}</div>
+    <div style="grid-column:1/-1;height:12px;background:rgba(255,255,255,.1);border-radius:3px"><div id="sb${i}" style="height:100%;width:${v/1071*100}%;background:${a==='kd'?KD:EG};border-radius:3px;transform-origin:left center"></div></div></div>`).join('')}
+  </div>
+  ${pill('Düzce','cityTop',66,'s6p')}`);
 
-/* ---- s7 peak ---- */
-scene('s7', `<div class="shade" style="z-index:74;opacity:.75"></div>
-  <div style="left:0;right:0;top:760px;display:flex;justify-content:center;z-index:76"><div id="s7s" class="stamp">${TR('evet!')}</div></div>
-  ${pill('Düzce','city',76,'s7c')}`);
-video('v7', 's7_duzce.mp4', B('s7',0), B('s7',8) + OV, 72);
+/* ---- s7 robot futbolu ---- */
+scene('s7', `<img id="s7bg" class="bgimg" src="${img('Usak16')}" style="z-index:71">
+  <div class="shade" style="z-index:74"></div>
+  <div id="s7t" style="left:var(--m);bottom:430px;z-index:76"><div id="s7a" style="font:400 130px/1 Anton;text-shadow:0 6px 26px rgba(0,0,0,.55)">${TR('robot futbolu')}</div>
+   <div style="margin-top:14px"><span id="s7b" style="display:inline-block;background:var(--brand);font:400 130px/1 Anton;padding:10px 28px 2px;border-radius:10px">${TR('sahada!')}</span></div></div>
+  ${pill('Uşak','cityTop',76,'s7c1')}${pill('İzmir · Ödemiş','cityTop',76,'s7c2')}`);
+video('v7', 's6_izmir.mp4', B('s7',4), B('s7',8) + OV, 72);
 
-/* ---- s8 closing ---- */
-scene('s8', `<img id="s8bg" class="bgimg" src="${img('Aksehir9')}" style="z-index:81">
-  <div class="shade" style="z-index:84"></div>
-  <div style="left:var(--m);right:var(--m);bottom:560px;text-align:center;z-index:86">
-   <div id="s8a" style="font:400 110px/1 Anton;text-shadow:0 6px 26px rgba(0,0,0,.55)">${TR('kağıt üzerinde')}<br>${TR('değil,')}</div>
-   <div style="margin-top:18px"><span id="s8b" class="sticker">${TR('sahada.')}</span></div></div>
-  <div id="s8l" style="left:0;right:0;bottom:330px;display:flex;flex-direction:column;align-items:center;gap:22px;z-index:86">
+/* ---- s8 peak ---- */
+scene('s8', `<div class="shade" style="z-index:84;opacity:.75"></div>
+  <div style="left:0;right:0;top:760px;display:flex;justify-content:center;z-index:86"><div id="s8s" class="stamp">${TR('evet!')}</div></div>
+  ${pill('Düzce','city',86,'s8c')}`);
+video('v8', 's7_duzce.mp4', B('s8',0), B('s8',6) + OV, 82);
+
+/* ---- s9 closing ---- */
+scene('s9', `<img id="s9bg" class="bgimg" src="${img('Aksehir9')}" style="z-index:91">
+  <div class="shade" style="z-index:94"></div>
+  <div style="left:var(--m);right:var(--m);bottom:560px;text-align:center;z-index:96">
+   <div id="s9a" style="font:400 110px/1 Anton;text-shadow:0 6px 26px rgba(0,0,0,.55)">${TR('kağıt üzerinde')}<br>${TR('değil,')}</div>
+   <div style="margin-top:18px"><span id="s9b" class="sticker">${TR('sahada.')}</span></div></div>
+  <div id="s9l" style="left:0;right:0;bottom:330px;display:flex;flex-direction:column;align-items:center;gap:22px;z-index:96">
    <div style="width:260px;height:122px;background:url(assets/logo_white.png) center/contain no-repeat;filter:drop-shadow(0 4px 14px rgba(0,0,0,.45))"></div>
    <div style="font:800 32px/1 Inter;text-shadow:0 2px 10px rgba(0,0,0,.6)">@think2actorg · think2act.org</div></div>
-  ${pill('Konya','cityTop',86,'s8c')}`);
+  ${pill('Konya','cityTop',96,'s9c')}`);
 
 html.push('<div id="logo"></div><div id="vig"></div><div id="grain"></div><div id="prog"><i></i></div>');
 root.innerHTML = html.join('');
@@ -158,10 +199,13 @@ window.__timelines = window.__timelines || {};
 const tl = gsap.timeline({ paused: true });
 const IN = { autoAlpha: 0, scale: 1.06 }, INto = { autoAlpha: 1, scale: 1, duration: 0.22, ease: 'power2.out', immediateRender: true };
 const textIn = (sel, t, d = 0.35) => tl.fromTo(sel, { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: d, ease: 'power3.out', immediateRender: true }, t);
+const slideIn = (sel, t, stagger = 0) => tl.fromTo(sel, { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger, ease: 'power3.out', immediateRender: true }, t);
 const pop = (sel, t) => tl.fromTo(sel, { scale: 0.4, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: true }, t);
+const grow = (sel, t, d = 0.45) => tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: d, ease: 'power2.out', immediateRender: true }, t);
 const push = (sel, t0, t1, a = 1, b = 1.07) => tl.fromTo(sel, { scale: a }, { scale: b, duration: t1 - t0, ease: 'none', immediateRender: false }, t0);
 const swap = (outSel, inSel, t) => { tl.set(outSel, { autoAlpha: 0 }, t); tl.fromTo(inSel, { autoAlpha: 0, x: 24 }, { autoAlpha: 1, x: 0, duration: 0.25, ease: 'power2.out', immediateRender: false }, t); };
 const count = (sel, to, t0, t1) => { const o = { v: 0 }; tl.to(o, { v: to, duration: t1 - t0, ease: 'power2.out', onUpdate: () => { document.querySelector(sel).textContent = nf(o.v); } }, t0); };
+const sceneIn = (id) => tl.fromTo(`#${id}`, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.22, ease: 'power2.out', immediateRender: false }, B(id));
 
 // global
 tl.to('#prog i', { scaleX: 1, duration: T.duration, ease: 'none' }, 0);
@@ -169,13 +213,16 @@ for (let i = 0; i < T.duration * 12; i++) tl.set('#grain', { x: ((i * 73) % 150)
 
 // s1 hook
 push('#s1bg', 0, B('s1', 4) + OV, 1, 1.07);
-textIn('#s1a', 0.15);
-gsap.set('#s1b', { autoAlpha: 0 }); pop('#s1b', B('s1', 4));
-gsap.set('#s1p2', { autoAlpha: 0 }); swap('#s1p1', '#s1p2', B('s1', 4));
+textIn('#s1k', 0.1);
+tl.fromTo('#s1n', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15, immediateRender: true }, B('s1', 0.4));
+count('#s1n', 4507, B('s1', 0.4), B('s1', 3.0));
+textIn('#s1c', B('s1', 1));
+for (let i = 0; i < 3; i++) pop(`#s1t${i}`, B('s1', 4 + i));
+gsap.set('#s1p2', { autoAlpha: 0 }); pop('#s1p1', 0.2); swap('#s1p1', '#s1p2', B('s1', 4));
 tl.fromTo('#v1', IN, INto, B('s1', 4));
 
 // s2 map
-tl.fromTo('#s2', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.22, ease: 'power2.out', immediateRender: false }, B('s2'));
+sceneIn('s2');
 textIn('#s2t', B('s2', 0.3));
 gsap.set('#s2k', { autoAlpha: 0 }); pop('#s2k', B('s2', 2));
 push('#s2map svg', B('s2'), B('s2', 12) + OV, 1, 1.05);
@@ -186,65 +233,64 @@ for (let i = 0; i < 5; i++) tl.to(`#pin${i}`, { autoAlpha: 1, scale: 1, duration
 for (let i = 0; i < 4; i++) tl.to(`#pin${5 + i}`, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'back.out(2.2)' }, B('s2', 6 + i * 0.5));
 textIn('#s2leg', B('s2', 8));
 
-// s3 counter
-tl.fromTo('#s3bg', IN, INto, B('s3'));
-push('#s3bg', B('s3') + 0.22, B('s3', 8) + OV, 1, 1.05);
-textIn('#s3b', B('s3', 0.4));
-count('#n3', 4507, B('s3', 0.6), B('s3', 3.6));
-pop('#s3p', B('s3', 1));
+// s3 calendar
+sceneIn('s3');
+push('#s3band', B('s3'), B('s3', 10) + OV, 1, 1.05);
+textIn('#s3t', B('s3', 0.2));
+tl.fromTo('#s3 .calrow', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, stagger: 0.02, ease: 'power1.out', immediateRender: true }, B('s3', 0.4));
+T.cal.forEach((b, i) => grow(`#cal${i}`, B('s3', b), 0.35));
+textIn('#s3f', B('s3', 5));
+pop('#s3p', B('s3', 0.5));
 
-// s4 Karadeniz
-tl.fromTo('#v4', IN, INto, B('s4'));
-gsap.set(['#s4bg2', '#s4tir'], { autoAlpha: 0 });
-tl.fromTo('#s4p1', { y: -320, rotation: -14, autoAlpha: 0 }, { y: 0, rotation: -5, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s4', 1));
-tl.fromTo('#s4p2', { y: -320, rotation: 12, autoAlpha: 0 }, { y: 0, rotation: 4, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s4', 2));
-textIn('#s4b', B('s4', 0.5));
-count('#s4n', 2304, B('s4', 1), B('s4', 3.5));
-tl.fromTo('.s4pl', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger: 0.08, ease: 'power3.out', immediateRender: true }, B('s4', 2));
-pop('#s4c1', B('s4', 0.5));
-tl.to(['#s4p1', '#s4p2'], { x: -1200, rotation: -20, duration: 0.4, ease: 'power2.in' }, B('s4', 5) - 0.3);
-tl.to('#s4c1', { autoAlpha: 0, duration: 0.15 }, B('s4', 5));
-tl.fromTo('#s4bg2', IN, INto, B('s4', 5));
-push('#s4bg2', B('s4', 5) + 0.22, B('s4', 10) + OV, 1, 1.05);
-textIn('#s4tir', B('s4', 5.5));
+// s4 total + split
+sceneIn('s4');
+push('#s4band', B('s4'), B('s4', 10) + OV, 1, 1.05);
+textIn('#s4t', B('s4', 0.3));
+count('#s4n', 4507, B('s4', 0.5), B('s4', 3.0));
+grow('#s4kd', B('s4', 3.5), 0.5);
+grow('#s4eg', B('s4', 4.5), 0.5);
+textIn('#s4f', B('s4', 6));
+pop('#s4p', B('s4', 0.5));
 
-// s5 Ege
-tl.fromTo('#v5', IN, INto, B('s5'));
-gsap.set(['#s5bg2', '#s5c2'], { autoAlpha: 0 });
-tl.fromTo('#s5p1', { y: -320, rotation: 14, autoAlpha: 0 }, { y: 0, rotation: 5, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s5', 1));
-tl.fromTo('#s5p2', { y: -320, rotation: -12, autoAlpha: 0 }, { y: 0, rotation: -4, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.6)', immediateRender: true }, B('s5', 2));
-textIn('#s5b', B('s5', 0.5));
-count('#s5n', 2203, B('s5', 1), B('s5', 3.5));
-tl.fromTo('.s5pl', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, stagger: 0.08, ease: 'power3.out', immediateRender: true }, B('s5', 2));
-pop('#s5c1', B('s5', 0.5));
-tl.to(['#s5p1', '#s5p2'], { x: 1200, rotation: 20, duration: 0.4, ease: 'power2.in' }, B('s5', 5) - 0.3);
-tl.fromTo('#s5bg2', IN, INto, B('s5', 5));
-push('#s5bg2', B('s5', 5) + 0.22, B('s5', 10) + OV, 1, 1.05);
-swap('#s5c1', '#s5c2', B('s5', 5));
+// s5 ranking
+sceneIn('s5');
+push('#s5band', B('s5'), B('s5', 12) + OV, 1, 1.05);
+textIn('#s5t', B('s5', 0.3));
+tl.fromTo('#s5 .bl', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, stagger: 0.04, immediateRender: true }, B('s5', 1));
+for (let i = 0; i < IL.length; i++) { grow(`#bar${i}`, B('s5', 1.5 + i * 0.25), 0.45); textIn(`#bv${i}`, B('s5', 1.5 + i * 0.25) + 0.3, 0.25); }
+textIn('#s5l', B('s5', 5));
+pop('#s5p', B('s5', 0.5));
 
-// s6 robot futbolu
-tl.fromTo('#s6bg', IN, INto, B('s6'));
-push('#s6bg', B('s6') + 0.22, B('s6', 6) + OV, 1, 1.06);
-tl.fromTo('#s6a', { x: -60, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: 'power3.out', immediateRender: true }, B('s6', 1));
-gsap.set('#s6b', { autoAlpha: 0 }); pop('#s6b', B('s6', 2));
-gsap.set('#s6c2', { autoAlpha: 0 }); pop('#s6c1', B('s6', 1)); swap('#s6c1', '#s6c2', B('s6', 6));
-tl.fromTo('#v6', IN, INto, B('s6', 6));
+// s6 schools
+sceneIn('s6');
+push('#s6band', B('s6'), B('s6', 10) + OV, 1, 1.05);
+textIn('#s6t', B('s6', 0.3));
+for (let i = 0; i < SCH.length; i++) { slideIn(`#sr${i}`, B('s6', 1 + i * 0.6)); grow(`#sb${i}`, B('s6', 1 + i * 0.6) + 0.2, 0.5); }
+pop('#s6p', B('s6', 0.5));
 
-// s7 peak
-tl.fromTo('#v7', IN, INto, B('s7'));
-gsap.set('#s7s', { autoAlpha: 0 });
-tl.fromTo('#s7s', { scale: 0.4, rotation: -2, autoAlpha: 0 }, { scale: 1, rotation: -6, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: true }, B('s7', 1));
-pop('#s7c', B('s7', 0.5));
+// s7 robot futbolu
+tl.fromTo('#s7bg', IN, INto, B('s7'));
+push('#s7bg', B('s7') + 0.22, B('s7', 4) + OV, 1, 1.06);
+slideIn('#s7a', B('s7', 1));
+gsap.set('#s7b', { autoAlpha: 0 }); pop('#s7b', B('s7', 2));
+gsap.set('#s7c2', { autoAlpha: 0 }); pop('#s7c1', B('s7', 1)); swap('#s7c1', '#s7c2', B('s7', 4));
+tl.fromTo('#v7', IN, INto, B('s7', 4));
 
-// s8 closing
-tl.fromTo('#s8bg', IN, INto, B('s8'));
-push('#s8bg', B('s8') + 0.22, T.duration, 1, 1.06);
-textIn('#s8a', B('s8', 1));
-gsap.set(['#s8b', '#s8l'], { autoAlpha: 0 });
-pop('#s8b', B('s8', 3));
-textIn('#s8l', B('s8', 5));
-tl.to('#logo', { autoAlpha: 0, duration: 0.2 }, B('s8', 4.6));
+// s8 peak
+tl.fromTo('#v8', IN, INto, B('s8'));
+gsap.set('#s8s', { autoAlpha: 0 });
+tl.fromTo('#s8s', { scale: 0.4, rotation: -2, autoAlpha: 0 }, { scale: 1, rotation: -6, autoAlpha: 1, duration: 0.35, ease: 'back.out(2.2)', immediateRender: true }, B('s8', 1));
 pop('#s8c', B('s8', 0.5));
+
+// s9 closing
+tl.fromTo('#s9bg', IN, INto, B('s9'));
+push('#s9bg', B('s9') + 0.22, T.duration, 1, 1.06);
+textIn('#s9a', B('s9', 1));
+gsap.set(['#s9b', '#s9l'], { autoAlpha: 0 });
+pop('#s9b', B('s9', 3));
+textIn('#s9l', B('s9', 5));
+tl.to('#logo', { autoAlpha: 0, duration: 0.2 }, B('s9', 4.6));
+pop('#s9c', B('s9', 0.5));
 
 window.__timelines['main'] = tl;
 tl.seek(0);

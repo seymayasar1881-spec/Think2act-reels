@@ -1,25 +1,37 @@
-# Cemre 3. Etap: rakamlarla (IG reel)
+# Cemre 3. Etap: istatistik reeli (IG)
 
-9:16, 40 sn, 120 BPM (80 vuruş). Storyboard seçimi: 1A · 2B · 3B · 4B · 6B · 7A · 8A · L2 · T1 · M1.
+9:16, 43 sn, 120 BPM (86 vuruş). v1 seçimi: 1A · 2B · 6B · 7A · 8A · L2 · T1 · M1.
+v2 (istatistik) seçimi: H2 · D1A · D2A · D3A · D4A. Grafik renkleri: Karadeniz #3D8FD6, Ege #EC6612
+(logo mavisi/turuncusu; renk körlüğü ve kontrast testinden geçti).
 
-## Bilgiler (kaynak: kullanıcı, 2026-11-18)
-- 9 il, 2 kol · 4.507 öğrenci · 18 okul
-- Karadeniz 2.304: Düzce 790 · Kastamonu 368 · Trabzon 506 · Gümüşhane 554 · Rize 86
-- Ege 2.203: İzmir (Ödemiş) 175 · Manisa 421 · Uşak 338 · Konya (Akşehir) 1.269
+## Bilgiler (kaynak: T2A, 2026-11-19)
+Toplam 4.507 öğrenci · 18 okul (Akşehir Bilim ve Sanat Merkezi okul sayılmıyor) · 9 il · 2 kol
+- Karadeniz 2.304
+  - Düzce/Kaynaşlı (5–6 Eki) 790: Kaynaşlı AKV Ortaokulu 369, Cumhuriyet 69, Üçköprü 71, Kumluca 233, Osmangazi 48
+  - Kastamonu/Bozkurt (7 Eki) 368: Bozkurt Ortaokulu 230, Bozkurt İmam Hatip 138
+  - Trabzon/Çarşıbaşı (12–13 Eki) 506: Çarşıbaşı Ortaokulu 344, İsmail Çavuş İmam Hatip 162 (kesin değil)
+  - Gümüşhane/Şiran (14–15 Eki) 554: Atatürk 89, Yunus Emre 330, Şehit Alkın Aydın İmam Hatip 135
+  - Rize/Çayeli (16 Eki) 86: Büyükköy Ortaokulu
+- Ege 2.203
+  - İzmir/Ödemiş (5–6 Eki) 175: Bademli Ortaokulu
+  - Manisa (7 Eki) 421: Manisa TOKİ İlköğretim Okulu
+  - Uşak (8 Eki) 338: Uşak Nori Demir Ortaokulu
+  - Konya/Akşehir (10–11 Eki) 1.269: Akşehir Atatürk Ortaokulu 1.071, Akşehir BİLSEM 198
 - YEĞİTEK Bilim Tırı bu etapta Kastamonu ve Düzce'de vardı.
-- Etiketler: Akşehir → "Konya", İzmir → "İzmir · Ödemiş".
+- Etiketler: Akşehir → "Konya", İzmir → "İzmir · Ödemiş". Gün sayısı yazılmıyor.
 
 ## Sahneler
-| # | Vuruş | Sn | İçerik | Çekim |
-|---|---|---|---|---|
-| s1 | 8 | 0–4 | "Ekimde / 9 il." | Kastamonu foto → İzmir video |
-| s2 | 12 | 4–10 | Harita, iki rota, 9 pin | marka gradyanı |
-| s3 | 8 | 10–14 | 4.507 sayaç | Trabzon foto |
-| s4 | 10 | 14–19 | Karadeniz 2.304 + baskılar, Bilim Tırı | Gümüşhane video → Rize, Düzce baskı → Düzce tır içi |
-| s5 | 10 | 19–24 | Ege 2.203 + baskılar | Konya video → İzmir, Manisa baskı → Uşak foto |
-| s6 | 12 | 24–30 | "Robot futbolu / sahada!" | Uşak foto → İzmir video |
-| s7 | 8 | 30–34 | "Evet!" damgası | Düzce kutlama videosu |
-| s8 | 12 | 34–40 | "Kağıt üzerinde değil, sahada." + logo | Konya foto |
+| # | Vuruş | Sn | İçerik |
+|---|---|---|---|
+| s1 | 8 | 0–4 | 4.507 sayacı + 9 il / 18 okul / 2 kol (Kastamonu foto → İzmir video) |
+| s2 | 12 | 4–10 | Harita, iki rota, 9 pin |
+| s3 | 10 | 10–15 | Ekim takvimi, iki kol, ★ Bilim Tırı |
+| s4 | 10 | 15–20 | Toplam 4.507, Karadeniz %51 / Ege %49 |
+| s5 | 12 | 20–26 | 9 il çubuk grafik |
+| s6 | 10 | 26–31 | En kalabalık 5 okul |
+| s7 | 8 | 31–35 | "Robot futbolu / sahada!" (Uşak foto → İzmir video) |
+| s8 | 6 | 35–38 | "Evet!" (Düzce kutlama videosu) |
+| s9 | 10 | 38–43 | "Kağıt üzerinde değil, sahada." + logo |
 
 ## Kurulum
 ```

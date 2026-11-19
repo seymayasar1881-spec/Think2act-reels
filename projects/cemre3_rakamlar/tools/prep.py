@@ -24,10 +24,10 @@ GRADE = "eq=contrast=1.06:saturation=1.08,hue=h=-4"
 TONEMAP = ("zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,"
            "tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p")
 
-BACKGROUNDS = ["Kastamonu4", "Trabzon3", "Duzce15", "Usak5", "Usak16", "Aksehir9"]
+BACKGROUNDS = ["Kastamonu4", "Trabzon3", "Duzce15", "Usak5", "Usak16", "Aksehir9", "Aksehir3", "Duzce17", "Rize7"]
 # Sources whose full-size download lost its orientation (checked against the Drive preview).
 ROTATE = {"Izmir_Odemis1": cv2.ROTATE_180}
-PRINTS = ["Rize7", "Duzce17", "Izmir_Odemis1", "Manisa1"]
+PRINTS = ["Izmir_Odemis1", "Manisa1"]
 # key: (source file, media start, media end, is HDR)
 CLIPS = {
     "s1_izmir": ("Root_Ege_loose7.mp4", 0.0, 2.4, False),
